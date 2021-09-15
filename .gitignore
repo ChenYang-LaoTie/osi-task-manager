@@ -16,7 +16,6 @@
 .idea/
 .git/
 .gitee/
-go.sum
 logs/
 excel
 lastupdate.tmp
