@@ -12,7 +12,7 @@ FROM golang:latest
 RUN mkdir -p /opt/app/ && mkdir -p /opt/app/conf/
 COPY ./conf/product_app.conf /opt/app/conf/app.conf
 # overwrite config yaml
-COPY  --from=BUILDER /go/src/gitee.com/openeuler/osi-task-manager/osi-task-manager /opt/app
+COPY  --from=BUILDER /go/src/gitee.com/openeuler/osi-task-manager/osi-task-manager /opt/app/osi-task-manager
 
 WORKDIR /opt/app/
-#ENTRYPOINT ["/opt/app/osi-task-manager"]
+ENTRYPOINT ["/opt/app/osi-task-manager"]
