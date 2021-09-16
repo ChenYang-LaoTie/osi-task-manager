@@ -5,7 +5,7 @@ MAINTAINER TommyLike<tommylikehu@gmail.com>
 # build binary
 RUN mkdir -p /go/src/gitee.com/openeuler/osi-task-manager
 COPY . /go/src/gitee.com/openeuler/osi-task-manager
-RUN cd /go/src/gitee.com/openeuler/osi-task-manager && CGO_ENABLED=1 go build -v -o ./osi-task-manager main.go
+#RUN cd /go/src/gitee.com/openeuler/osi-task-manager && CGO_ENABLED=1 go build -v -o ./osi-task-manager main.go
 
 # copy binary config and utils
 FROM golang:latest
