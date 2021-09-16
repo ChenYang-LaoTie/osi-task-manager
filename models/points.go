@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"osi-task-manager/common"
@@ -93,13 +92,11 @@ func (elt *EmailList) Read(field ...string) ([]EmailList, error) {
 }
 
 func QueryUserPointsCount() (count int64) {
-	sql := fmt.Sprintf(`SELECT COUNT(id) total FROM osi_euler_user_integ_count 
-where integral_value > 0 order by id asc`)
 	res := struct {
 		Total int64
 	}{}
 	o := orm.NewOrm()
-	err := o.Raw(sql).QueryRow(&res)
+	err := o.Raw("SELECT COUNT(id) total FROM osi_euler_user_integ_count where integral_value > 0 order by id asc").QueryRow(&res)
 	if err != nil {
 		logs.Error("QueryUserPointsCount, err: ", err)
 		return 0
@@ -123,13 +120,12 @@ func QueryTotalPointsData(currentPage, pageSize int) (eu []EulerUserIntegCount) 
 }
 
 func QueryUserPointsDetailCount(userId int64) (count int64) {
-	sql := fmt.Sprintf(`SELECT COUNT(id) total FROM osi_euler_user_integ_detail 
-where user_id = %d and integral_value > 0 order by id asc`, userId)
 	res := struct {
 		Total int64
 	}{}
 	o := orm.NewOrm()
-	err := o.Raw(sql).QueryRow(&res)
+	err := o.Raw("SELECT COUNT(id) total FROM osi_euler_user_integ_detail where user_id = ? " +
+		"and integral_value > 0 order by id asc", userId).QueryRow(&res)
 	if err != nil {
 		logs.Error("QueryUserPointsDetailCount, err: ", err)
 		return 0
@@ -140,7 +136,7 @@ where user_id = %d and integral_value > 0 order by id asc`, userId)
 func QueryUserPointsDetail(currentPage, pageSize int, userId int64) (eu []EulerUserIntegDetail) {
 	startSize := (currentPage - 1) * pageSize
 	o := orm.NewOrm()
-	num, err := o.Raw("SELECT * FROM osi_euler_user_integ_detail where user_id = %d and integral_value > 0 "+
+	num, err := o.Raw("SELECT * FROM osi_euler_user_integ_detail where user_id = ? and integral_value > 0 "+
 		"order by id asc limit ? offset ?", userId,
 		pageSize, startSize).QueryRows(&eu)
 	if err == nil && num > 0 {

@@ -49,12 +49,12 @@ func (u *InternPointsListControllers) Get() {
 	resp.Mesg = "Data does not exist"
 	resp.TotalCount = 0
 	resp.UserPoints = upd
-	defer u.RetData(resp)
 	token := u.GetString("token", "")
 	tokenBool := CheckLoginUser(token)
 	if !tokenBool {
 		resp.Code = 403
 		resp.Mesg = "Request parameter error"
+		u.RetData(resp)
 		return
 	}
 	count := models.QueryUserPointsCount()
@@ -68,6 +68,7 @@ func (u *InternPointsListControllers) Get() {
 			resp.Code = 403
 			resp.Mesg = "Request parameter error"
 			resp.TotalCount = 0
+			u.RetData(resp)
 			return
 		}
 		pageSize, err := u.GetInt("pageSize", 100)
@@ -76,6 +77,7 @@ func (u *InternPointsListControllers) Get() {
 			resp.Code = 403
 			resp.Mesg = "Request parameter error"
 			resp.TotalCount = 0
+			u.RetData(resp)
 			return
 		}
 		pointsData := models.QueryTotalPointsData(currentPage, pageSize)
@@ -93,11 +95,14 @@ func (u *InternPointsListControllers) Get() {
 				upd = append(upd, up)
 			}
 			resp.UserPoints = upd
+			u.RetData(resp)
+			return
 		} else {
 			resp.Code = 404
 			resp.Mesg = "Data does not exist"
 			resp.TotalCount = 0
 			logs.Error("Data does not exist")
+			u.RetData(resp)
 			return
 		}
 	}
@@ -149,12 +154,12 @@ func (u *InternUserPointsControllers) Get() {
 	resp.UserId = 0
 	resp.GitUserId = ""
 	resp.UserPoints = upd
-	defer u.RetData(resp)
 	token := u.GetString("token", "")
 	tokenBool := CheckLoginUser(token)
 	if !tokenBool {
 		resp.Code = 403
 		resp.Mesg = "Request parameter error"
+		u.RetData(resp)
 		return
 	}
 	userId, err := u.GetInt64("userId", 0)
@@ -163,6 +168,7 @@ func (u *InternUserPointsControllers) Get() {
 		resp.Code = 403
 		resp.Mesg = "Request parameter error"
 		resp.TotalCount = 0
+		u.RetData(resp)
 		return
 	}
 	resp.UserId = userId
@@ -183,6 +189,7 @@ func (u *InternUserPointsControllers) Get() {
 			resp.Code = 403
 			resp.Mesg = "Request parameter error"
 			resp.TotalCount = 0
+			u.RetData(resp)
 			return
 		}
 		pageSize, err := u.GetInt("pageSize", 100)
@@ -191,6 +198,7 @@ func (u *InternUserPointsControllers) Get() {
 			resp.Code = 403
 			resp.Mesg = "Request parameter error"
 			resp.TotalCount = 0
+			u.RetData(resp)
 			return
 		}
 		pointsData := models.QueryUserPointsDetail(currentPage, pageSize, userId)
@@ -211,11 +219,14 @@ func (u *InternUserPointsControllers) Get() {
 				upd = append(upd, up)
 			}
 			resp.UserPoints = upd
+			u.RetData(resp)
+			return
 		} else {
 			resp.Code = 404
 			resp.Mesg = "Data does not exist"
 			resp.TotalCount = 0
 			logs.Error("Data does not exist")
+			u.RetData(resp)
 			return
 		}
 	}
