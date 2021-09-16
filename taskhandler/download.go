@@ -198,7 +198,8 @@ func ExcelParse(fileName string) [][]string {
 // Download excel file
 func DownloadExcel(efi ExcelFileInfo) error {
 	localPath := filepath.Join(efi.LocalDir, efi.RemoteFileName)
-	remotePath := fmt.Sprintf("latest_rpm/%v", efi.RemoteFileName)
+	excePath := beego.AppConfig.String("excel::excel_path")
+	remotePath := fmt.Sprintf("%v/%v", excePath, efi.RemoteFileName)
 	gitUrl := fmt.Sprintf("https://gitee.com/api/v5/repos/%v/%v/contents/%v?access_token=%v",
 		efi.ExcelOwner, efi.ExcelOwner, remotePath, efi.AccessToken)
 	resp, err := http.Get(gitUrl)

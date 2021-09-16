@@ -75,8 +75,8 @@ const (
 	IssueForciGiveUpSuccess = `@%v , 由于您认领的任务未在规定时间提交完成, 此次认领无效, 任务被释放.`
 
 	// Claim the same task notification multiple times
-	IssueClaimSameTask = `@%v , 您已认领过当前任务.`
-	IssueClaimSameSend = `%v, 您已经认领过此任务, 无法再次认领`
+	IssueClaimSameTask = `@%v , 您已认领过当前任务, 无法再次认领.`
+	IssueClaimSameSend = `%v, 您已经认领过此任务, 无法再次认领.`
 
 	// The task has been preemptively claimed by others
 	IssueClaimPree     = `@%v , 您无法认领此任务, 已被他人认领.`
