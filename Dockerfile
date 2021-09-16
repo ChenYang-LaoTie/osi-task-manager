@@ -15,4 +15,4 @@ COPY ./conf/product_app.conf /opt/app/conf/app.conf
 COPY  --from=BUILDER /go/src/gitee.com/openeuler/osi-task-manager/osi-task-manager /opt/app
 
 WORKDIR /opt/app/
-ENTRYPOINT ["/opt/app/osi-task-manager"]
+#ENTRYPOINT ["/opt/app/osi-task-manager"]
