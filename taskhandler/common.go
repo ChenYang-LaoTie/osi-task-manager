@@ -26,80 +26,99 @@ const (
 )
 
 const (
-	// Notification of claim failure
-	IssueClaimFailure     = `@%v, 您认领的任务已经达上限,无法再次领取新的任务.`
-	IssueClaimFailureSend = `您认领的任务已经达上限,无法再次领取新的任务, 请先提交已认领的任务或者取消已认领的任务.`
-	// Claim the same task notification multiple times
-	IssueClaimSameTask = `@%v, 您已认领过当前任务.`
-	IssueClaimSameSend = `%v, 您已经认领过此任务, 无法再次认领`
 	// Notification of successful claim task
-	IssueClaimSuccess     = `@%v, 感谢您认领此任务, 请及时跟导师沟通, 导师审核通过后才能完成此任务, 否则任务无效.`
-	IssueClaimSuccessSend = `%v, 感谢您认领此任务, 请及时跟导师沟通, 导师审核通过后才能完成此任务, 否则任务无效..`
+	IssueClaimSuccess     = `@%v , 感谢您认领此任务, 请及时跟导师沟通, 导师审核通过后才能承担此任务, 否则任务无效.`
+	IssueClaimSuccessSend = `%v, 感谢您认领此任务, 请及时跟导师沟通, 导师审核通过后才能承担此任务, 否则任务无效.`
+
+	// The user has not signed up or signed up successfully, unable to receive the task
+	IssueClaiNotSigned     = `@%v , 您还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://openeuler.org/zh/interaction/intership).`
+	IssueClaiNotSignedSend = `%v, 还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://openeuler.org/zh/interaction/intership).`
+	// The user did not complete the test task
+	IssueTestPrCommit     = `@%v , 您还未通过开源实习测试任务, 无法领取此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
+	IssueTestPrCommitSend = `%v, 还未通过开源实习测试任务, 无法领取此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
+
+	// Notification of claim failure
+	IssueClaimFailure     = `@%v , 您认领的任务已经达上限,无法再次领取新的任务.`
+	IssueClaimFailureSend = `您认领的任务已经达上限,无法再次领取新的任务, 请先提交已认领的任务或者取消已认领的任务.`
+
+	// approve
+	IssueStdApproveTask     = `@%v , 恭喜您已成功领取该任务, 请及时处理任务. 认领任务>导师审核认领资格>处理任务>提交任务>导师审核>pr合入>获得积分.`
+	IssueStdApproveTaskSend = `%v, 您已成功领取该任务, 请及时处理任务. 认领任务>导师审核认领资格>处理任务>提交任务>导师审核>pr合入>获得积分.`
+
+	//unapprove
+	IssueStdUnApproveTask     = `@%v , 您此次任务认领失败, 请认领其他任务, 非常感谢您的参与.`
+	IssueStdUnApproveTaskSend = `%v, 此任务认领失败, 请认领其他任务, 非常感谢您的参与.`
+
+	// completed
+	IssueClaimCheckSubmit      = `@%v , 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://openeuler.org/zh/interaction/intership).`
+	IssueClaimCheckSubmitSend  = `%v, 提交此任务前, 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://openeuler.org/zh/interaction/intership).`
+	IssueClaimTestPrSubmit     = `@%v , 您还未通过开源实习测试任务, 无法提交此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
+	IssueClaimTestPrSubmitSend = `%v, 提交此任务前, 还未通过开源实习测试任务, 无法提交任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
+	IssueClaimComplete         = `@%v , 请关注您提交的pr审核进度, 跟进相关负责人审核, pr合入后可获得积分. 注: 提交pr时, 请务必在pr描述里添加此issue编号(#issue编号), 谢谢!`
+	IssueClaimCompleteSend     = `%v, 任务已通知导师审核, 请关注当前issue, 及时联系导师, 跟进审核进度, 提交pr时, 请在pr描述里添加此issue编号(#issue编号).`
+
+	// unassign
+	IssueGiveUpSuccess        = `@%v , 您已取消此任务认领.`
+	IssueGiveUpSuccessSend    = `%v, 此任务您已取消, 可以继续认领其他任务.`
+	IssueBlackClaimFailure    = `@%v , 您无法处理此任务, 请知晓.`
+	IssueUnassignClaimCount   = `@%v , 您取消认领已超过规定次数, 账号将被冻结1个月, 冻结期间无法领取任务.`
+	IssueUnassignedClaimCount = `@%v , 您取消认领已超过规定次数, 账号将被冻结1个月, 冻结期间无法领取任务.`
+	IssueUncompleteClaimCount = `由于参赛者: @%v 取消认领已超过规定次数, 账号将被冻结1个月, 冻结期间无法处理任务.`
+
+	// fail
+	IssueTutRelSuccessTask    = `@%v , 您已经释放 @%v 认领的任务, 任务将再次进入任务池, 后续他人可以继续认领此任务.`
+	IssueStdRelTaskSubmit     = `@%v , 您提交的任务, 已被导师释放, 如有疑问, 请联系导师, 谢谢!`
+	IssueStdRelTaskSubmitSend = `%v, 您提交的此任务, 已被导师 @%v 释放, 如有疑问, 请联系导师, 谢谢!`
+
+	// release
+	IssueForciGiveUpNoReiew = `@%v , 由于您认领的任务未在规定时间通过导师的审核, 此次认领无效, 任务被释放.`
+	IssueForciGiveUpSuccess = `@%v , 由于您认领的任务未在规定时间提交完成, 此次认领无效, 任务被释放.`
+
+	// Claim the same task notification multiple times
+	IssueClaimSameTask = `@%v , 您已认领过当前任务.`
+	IssueClaimSameSend = `%v, 您已经认领过此任务, 无法再次认领`
+
 	// The task has been preemptively claimed by others
-	IssueClaimPree     = `@%v, 您无法认领此任务, 已被他人认领.`
+	IssueClaimPree     = `@%v , 您无法认领此任务, 已被他人认领.`
 	IssueClaimPreeSend = `%v, 您无法认领此任务, 已被他人认领.`
 	// The user cannot claim the current task, the information is wrong
-	IssueClaimWrong     = `@%v, 处理失败, 稍后重试.`
+	IssueClaimWrong     = `@%v , 处理失败, 稍后重试.`
 	IssueClaimWrongSend = `%v, 处理失败, 稍后重试.`
-	// The user has not signed up or signed up successfully, unable to receive the task
-	IssueClaiNotSigned     = `@%v, 领取任务前, 请确认已报名成为授权用户, 否则无法领取此任务, 谢谢!`
-	IssueClaiNotSignedSend = `%v, 此任务领取失败, 请确认已报名成为授权用户, 谢谢!`
-	// The user did not complete the test task
-	IssueTestPrCommit     = `@%v, 领取任务前, 请先在 %v 仓提交测试pr, pr审核通过后, 才能领取任务, 谢谢!`
-	IssueTestPrCommitSend = `%v, 领取此任务前, 请根据规则在 %v 仓提交测试pr, pr审核通过后, 才能领取任务, 谢谢!`
+
 	// Submit task
-	IssueClaimSubmit         = `@%v, 任务认领者才能提交此任务.`
-	IssueClaimSubmitComplete = `@%v, 任务已审核完成, 请查看私信或者官网获取结果.`
+	IssueClaimSubmit         = `@%v , 任务认领者才能提交此任务.`
+	IssueClaimSubmitComplete = `@%v , 任务已审核完成, 请查看私信或者官网获取结果.`
 	// Give up the task
-	IssueGiveUpTask        = `@%v, 认领此任务的开发者才能取消此任务.`
-	IssueGiveUpTaskSend    = `%v, 认领此任务的开发者才能取消此任务. 请确认已报名成为授权用户, 否则命令无效.`
-	IssueGiveUpFailure     = `@%v, 任务已审核完成, 无法取消此任务.`
-	IssueGiveUpSuccess     = `@%v, 您已取消此任务.`
-	IssueGiveUpSuccessSend = `%v, 此任务您已取消, 可以继续认领其他任务.`
-	IssueStateProc         = `@%v, 此issue状态, 只能由issue责任人改变, 如需改变, 请先变更issue责任人.`
+	IssueGiveUpTask     = `@%v , 认领此任务的开发者才能取消此任务.`
+	IssueGiveUpTaskSend = `%v, 认领此任务的开发者才能取消此任务. 请确认已报名成为授权用户, 否则命令无效.`
+	IssueGiveUpFailure  = `@%v , 任务已审核完成, 无法取消此任务.`
+
+	IssueStateProc = `@%v , 此issue状态, 只能由issue责任人改变, 如需改变, 请先变更issue责任人.`
 	// After earning points, send a private message
-	IssuePointSend            = `您提交的任务: %v 已审核通过, 当前任务获得的积分为: %v分.`
-	IssueBlackSend            = `您认领的任务: %v 已被取消, 请知晓.`
-	IssueBlackClaimFailure    = `@%v, 您无法处理此任务, 请知晓.`
-	IssueUnassignClaimCount   = `@%v, 由于您取消任务次数已达到上线, 账号已被冻结, 待账号解冻后才能继续操作.`
-	IssueUnassignedClaimCount = `@%v, 由于您被取消任务次数已达到上线, 账号已被冻结, 待账号解冻后才能继续操作.`
-	IssueUncompleteClaimCount = `由于参赛者: @%v 取消任务次数已达到上线, 账号已被冻结, 待账号解冻后才能继续操作.`
-	IssueTutAssignTask        = `@%v, 已报名认证过的导师, 才能审核任务, 谢谢!`
-	IssueTutAssignTaskSend    = `%v, 您无法审核当前任务, 请先报名认证审核资格, 谢谢!`
-	IssueTutUnassignTask      = `@%v, 用户已经放弃此任务, 请知晓, 谢谢!`
-	IssueStdRegisterTask      = `@%v, 用户还未报名, 无法认领此任务, 请先通知报名成认证用户, 谢谢!`
-	IssueStdApproveTask       = `@%v, 恭喜您已成功领取该任务, 请及时处理任务. 认领任务>导师审核认领资格>处理任务>提交任务>导师审核pr通过>获得积分.`
-	IssueStdApproveTaskSend   = `%v, 您已成功领取该任务, 请及时处理任务. 认领任务>导师审核认领资格>处理任务>提交任务>导师审核pr通过>获得积分.`
-	IssueStdUnApproveTask     = `@%v, 您此次任务认领失败, 请认领其他任务, 非常感谢您的参与.`
-	IssueStdUnApproveTaskSend = `%v, 此任务认领失败, 请认领其他任务, 非常感谢您的参与.`
+	IssuePointSend         = `您提交的任务: %v 已审核通过, 当前任务获得的积分为: %v分.`
+	IssueBlackSend         = `您认领的任务: %v 已被取消, 请知晓.`
+	IssueTutAssignTask     = `@%v , 已报名认证过的导师, 才能审核任务, 谢谢!`
+	IssueTutAssignTaskSend = `%v, 您无法审核当前任务, 请先报名认证审核资格, 谢谢!`
+	IssueTutUnassignTask   = `@%v , 用户已经放弃此任务, 请知晓, 谢谢!`
+	IssueStdRegisterTask   = `@%v , 用户还未报名, 无法认领此任务, 请先通知报名成认证用户, 谢谢!`
+
 	// Submit task
-	IssueClaimCheckSubmit      = `@%v, 提交任务前, 请确认已报名成为授权用户, 否则无法提交此任务, 谢谢!`
-	IssueClaimCheckSubmitSend  = `%v, 提交此任务前, 请确认已报名成为授权用户, 否则无法提交此任务, 谢谢!`
-	IssueClaimTestPrSubmit     = `@%v, 提交任务前, 请先在 %v 仓提交测试pr, pr审核通过后, 才能提交任务, 谢谢!`
-	IssueClaimTestPrSubmitSend = `%v, 提交此任务前, 请根据规则在 %v 仓提交测试pr, pr审核通过后, 才能提交任务, 谢谢!`
-	IssueClaimComplete         = `@%v, 任务已通知导师审核, 请关注当前issue, 及时联系导师, 跟进审核进度. 注: 提交pr时, 请在pr描述里添加此issue编号(#issue编号), 谢谢!`
-	IssueClaimCompleteSend     = `%v, 任务已通知导师审核, 请关注当前issue, 及时联系导师, 跟进审核进度, 提交pr时, 请在pr描述里添加此issue编号(#issue编号)`
-	IssueReviewTaskSend        = `%v, 此任务学生已提交完成, 请尽快合入pr, 如果pr不符合要求, 请在issue评论区给出指导意见, 重新修改pr; 或者输入: /intern-fail, 
+	IssueReviewTaskSend = `%v, 此任务学生已提交完成, 请尽快合入pr, 如果pr不符合要求, 请在issue评论区给出指导意见, 重新修改pr; 或者输入: /intern-fail, 
 此任务将被释放到任务池, 其他人可以继续认领此任务.`
-	IssueStdUnapproveComplete     = `@%v, 请先联系导师审核此任务的认领资格, 否则提交完成无效, 参考步骤: 认领任务>导师审核认领资格>处理任务>提交任务>导师审核pr通过>获得积分.`
+	IssueStdUnapproveComplete     = `@%v , 请先联系导师审核此任务的认领资格, 否则提交完成无效, 参考步骤: 认领任务>导师审核认领资格>处理任务>提交任务>导师审核pr通过>获得积分.`
 	IssueStdUnapproveCompleteSend = `%v, 请先联系导师审核此任务的认领资格, 否则提交完成无效, 参考步骤: 认领任务>导师审核认领资格>处理任务>提交任务>导师审核pr通过>获得积分.`
-	IssueTutFailTask              = `@%v, 已报名认证过的导师, 才能取消他人认领的任务, 谢谢!`
-	IssueTutRelSuccessTask        = `@%v, 您已经释放 @%v 认领的任务, 任务将再次进入任务池, 后续他人可以继续认领此任务.`
-	IssueStdRelTaskSubmit         = `@%v, 您提交的任务, 已被导师释放, 请及时与导师联系, 谢谢!`
-	IssueStdRelTaskSubmitSend     = `%v, 您提交的此任务, 已被导师 @%v 释放, 请及时与导师联系, 获取释放原因, 谢谢!`
-	IssueClosePointsComplete      = `@%v, 您的pr已合入社区, 已获得 %v 积分, 谢谢您的参与.`
+	IssueTutFailTask              = `@%v , 已报名认证过的导师, 才能取消他人认领的任务, 谢谢!`
+	IssueClosePointsComplete      = `@%v , 您的pr已合入社区, 已获得 %v 积分, 谢谢您的参与.`
 	IssueClosedByTry              = `issue: %v, 已经被@%v 关闭, 如果未提交pr, 请及时提交并关联issue编号, 如有其他疑问, 请及时联系您的导师处理, 谢谢!`
-	IssueForciGiveUpNoReiew       = `@%v, 由于您认领的任务未在规定时间通过导师的审核, 此次认领无效.`
-	IssueForciGiveUpSuccess       = `@%v, 由于您认领的任务未在规定时间提交完成, 此次认领无效.`
-	IssueForciGiveUpBlack         = `@%v, 由于您违规操作, 此次认领无效.`
+	IssueForciGiveUpBlack         = `@%v , 由于您违规操作, 此次认领无效.`
 )
 
 const (
 	// test pr
-	TestPrCommitComment     = `@%v, 感谢您提交此pr, 我们会尽快评估此pr, 谢谢!`
+	TestPrCommitComment     = `@%v , 感谢您提交此pr, 我们会尽快评估此pr, 谢谢!`
 	TestPrCommitCommentSend = `感谢您提交此pr: %v, 我们会尽快评估此pr, 评审通过后, 请认领具体任务, 谢谢!`
-	TestPrRewiewSend        = `参赛者: @%v, 已提交测试任务pr: %v, 请尽快完成pr的合入, 用户才能认领任务, 如果不能通过, 请在评论区告知用户原因, 谢谢!`
-	TestPrMergComment       = `@%v, 此pr已审核通过, 可以正常领取任务啦, 谢谢!`
+	TestPrRewiewSend        = `参赛者: @%v , 已提交测试任务pr: %v, 请尽快完成pr的合入, 用户才能认领任务, 如果不能通过, 请在评论区告知用户原因, 谢谢!`
+	TestPrMergComment       = `@%v , 此pr已审核通过, 可以正常领取任务啦, 谢谢!`
 	TestPrMergCommentSend   = `测试任务pr: %v, 已审核通过, 可以正常领取任务啦, 谢谢!`
 )
 
