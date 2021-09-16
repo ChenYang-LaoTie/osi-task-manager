@@ -13,6 +13,6 @@ RUN mkdir -p /opt/app/ && mkdir -p /opt/app/conf/
 COPY ./conf/product_app.conf /opt/app/conf/app.conf
 # overwrite config yaml
 COPY  --from=BUILDER /go/src/gitee.com/openeuler/osi-task-manager/osi-task-manager /opt/app
-RUN go build -v -o /opt/app/osi-task-manager /opt/app/main.go
+RUN cd /opt/app && go build -v -o ./osi-task-manager main.go
 WORKDIR /opt/app/
 ENTRYPOINT ["/opt/app/osi-task-manager"]
