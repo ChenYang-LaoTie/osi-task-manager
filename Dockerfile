@@ -9,10 +9,11 @@ COPY . /go/src/gitee.com/openeuler/osi-task-manager
 
 # copy binary config and utils
 FROM golang:latest
-RUN mkdir -p /opt/app/ 
+RUN mkdir -p /opt/app/ && mkdir -p /opt/app/conf/
+COPY ./conf/product_app.conf /opt/app/conf/app.conf
 # overwrite config yaml
 COPY  --from=BUILDER /go/src/gitee.com/openeuler/osi-task-manager/osi-task-manager /opt/app
 RUN cd /opt/app && go build -v -o ./osi-task-manager main.go
-COPY /opt/app/conf/product_app.conf /opt/app/conf/app.conf
+COPY /go/src/gitee.com/openeuler/osi-task-manager/conf/product_app.conf /opt/app/conf/app.conf
 WORKDIR /opt/app/
 ENTRYPOINT ["/opt/app/osi-task-manager"]
