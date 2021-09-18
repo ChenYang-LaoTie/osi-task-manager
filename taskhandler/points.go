@@ -93,7 +93,7 @@ func ExportEulerPoints(flag int, statistDate StatistDate) {
 	noProcUser := beego.AppConfig.String("repo::user_login")
 	noProcUserSlice := strings.Split(noProcUser, ",")
 	// File storage directory
-	CreateDir(dir)
+	common.CreateDir(dir)
 	totalFileSlice := make([]string, 0)
 	fileSlice := make([]string, 0)
 	// weekly date

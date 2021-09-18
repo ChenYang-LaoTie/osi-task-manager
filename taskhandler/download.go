@@ -32,6 +32,7 @@ func DownloadFile() error {
 	excelOwner := beego.AppConfig.String("excel::excel_owner")
 	excelRepo := beego.AppConfig.String("excel::excel_repo")
 	accessToken := os.Getenv("GITEE_SRC_TOKEN")
+	common.CreateDir(dir)
 	stdInfo := ExcelFileInfo{LocalDir: dir, RemoteFileName: stdExcelPath,
 		ExcelOwner: excelOwner, ExcelRepo: excelRepo, AccessToken: accessToken}
 	stdErr := DownloadExcel(stdInfo)

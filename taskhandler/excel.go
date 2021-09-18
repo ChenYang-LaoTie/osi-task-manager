@@ -65,16 +65,6 @@ type Message struct {
 	attachment  Attachment
 }
 
-func CreateDir(dir string) error {
-	_, err := os.Stat(dir)
-	if err != nil {
-		if os.IsNotExist(err) {
-			os.Mkdir(dir, 0777)
-		}
-	}
-	return err
-}
-
 func createExcel(excelPath string) string {
 	xlsx := excelize.NewFile()
 	index := xlsx.NewSheet(sheetName)

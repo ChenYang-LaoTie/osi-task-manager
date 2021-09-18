@@ -215,7 +215,7 @@ func EulerIssueStatistics() error {
 	weekList := ChangeToWeek(GameStartTime[:10], curDate)
 	logs.Info("weekList: ", weekList)
 	// File storage directory
-	CreateDir(dir)
+	common.CreateDir(dir)
 	totalFileSlice := make([]string, 0)
 	// Get user information
 	eulerIssue := models.QueryOpenEulerIssueAll()

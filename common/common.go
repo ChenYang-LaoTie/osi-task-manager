@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"os"
 	"strings"
 	"time"
 )
@@ -84,4 +85,14 @@ func GetEnvToken(org string) string {
 	org = strings.ToLower(org)
 	gitToken := beego.AppConfig.String(fmt.Sprintf("repo::%s", org))
 	return gitToken
+}
+
+func CreateDir(dir string) error {
+	_, err := os.Stat(dir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			os.Mkdir(dir, 0777)
+		}
+	}
+	return err
 }
