@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"os"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -95,4 +96,18 @@ func CreateDir(dir string) error {
 		}
 	}
 	return err
+}
+
+func SliceRemoveDup(req interface{}) (ret []interface{}) {
+	if reflect.TypeOf(req).Kind() != reflect.Slice {
+		return
+	}
+	value := reflect.ValueOf(req)
+	for i := 0; i < value.Len(); i++ {
+		if i > 0 && reflect.DeepEqual(value.Index(i-1).Interface(), value.Index(i).Interface()) {
+			continue
+		}
+		ret = append(ret, value.Index(i).Interface())
+	}
+	return
 }

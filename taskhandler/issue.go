@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"osi-task-manager/common"
 	"osi-task-manager/models"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -479,6 +480,7 @@ func AutoAddLabelTask() error {
 						queryErr := models.QuerySigLabelMapping(&slm, "EulerLabel")
 						if slm.Id < 1 {
 							logs.Error("sig tag has no configuration information: ", lab, queryErr)
+							repLabelList = append(repLabelList, lab)
 						} else {
 							if !labelFlag {
 								repLabelList = append(repLabelList, slm.InternLabel)
@@ -491,14 +493,33 @@ func AutoAddLabelTask() error {
 						repLabelList = append(repLabelList, lab)
 					}
 				}
-				if labelFlag {
-					labels := strings.Join(repLabelList, ",")
-					UpdateIssueLabels(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner, labels)
-					ei.IssueLabel = labels
-					ei.LabelFlag = 2
-					upErr := models.UpdateEulerOriginIssue(&ei, "IssueLabel", "LabelFlag")
-					if upErr != nil {
-						logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
+				repLabelSlice := make([]string, 0)
+				if len(repLabelList) > 0 {
+					sort.Strings(repLabelList)
+					repSlice := common.SliceRemoveDup(repLabelList)
+					for _, rep := range repSlice {
+						repLabelSlice = append(repLabelSlice, rep.(string))
+					}
+				}
+				labels := ""
+				if len(repLabelSlice) > 0 {
+					labels = strings.Join(repLabelList, ",")
+				}
+				if len(labels) > 1 {
+					if labelFlag {
+						UpdateIssueLabels(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner, labels)
+						ei.LabelFlag = 2
+						ei.IssueLabel = labels
+						upErr := models.UpdateEulerOriginIssue(&ei, "IssueLabel", "LabelFlag")
+						if upErr != nil {
+							logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
+						}
+					} else {
+						ei.IssueLabel = labels
+						upErr := models.UpdateEulerOriginIssue(&ei, "IssueLabel")
+						if upErr != nil {
+							logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
+						}
 					}
 				}
 			}
