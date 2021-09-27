@@ -462,6 +462,7 @@ func GetGitOriginIssue() error {
 }
 
 func AutoAddLabelTask() error {
+	osiTaskLabel := beego.AppConfig.String("osi_task")
 	eulerIssue := models.QueryOpenEulerIssueAll(1)
 	if len(eulerIssue) > 0 {
 		for _, ei := range eulerIssue {
@@ -471,6 +472,7 @@ func AutoAddLabelTask() error {
 				continue
 			}
 			_, allLabelList := QueryIssueLabels(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner)
+			allLabelList = append(allLabelList, osiTaskLabel)
 			if len(allLabelList) > 0 {
 				repLabelList := make([]string, 0)
 				labelFlag := false
