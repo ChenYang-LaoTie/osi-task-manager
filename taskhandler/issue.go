@@ -457,6 +457,52 @@ func GetGitOriginIssue() error {
 			}
 		}
 	}
+	return nil
+}
 
+func AutoAddLabelTask() error {
+	eulerIssue := models.QueryOpenEulerIssueAll(1)
+	if len(eulerIssue) > 0 {
+		for _, ei := range eulerIssue {
+			eulerToken := common.GetEnvToken(ei.Owner)
+			if len(eulerToken) < 1 {
+				logs.Error("namespace error: ", ei.Owner)
+				continue
+			}
+			_, allLabelList := QueryIssueLabels(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner)
+			if len(allLabelList) > 0 {
+				repLabelList := make([]string, 0)
+				labelFlag := false
+				for _, lab := range allLabelList {
+					if strings.Contains(lab, "sig/") {
+						slm := models.SigLabelMapping{EulerLabel: lab}
+						queryErr := models.QuerySigLabelMapping(&slm, "EulerLabel")
+						if slm.Id < 1 {
+							logs.Error("sig tag has no configuration information: ", lab, queryErr)
+						} else {
+							if !labelFlag {
+								repLabelList = append(repLabelList, slm.InternLabel)
+								labelFlag = true
+							} else {
+								repLabelList = append(repLabelList, lab)
+							}
+						}
+					} else {
+						repLabelList = append(repLabelList, lab)
+					}
+				}
+				if labelFlag {
+					labels := strings.Join(repLabelList, ",")
+					UpdateIssueLabels(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner, labels)
+					ei.IssueLabel = labels
+					ei.LabelFlag = 2
+					upErr := models.UpdateEulerOriginIssue(&ei, "IssueLabel", "LabelFlag")
+					if upErr != nil {
+						logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
+					}
+				}
+			}
+		}
+	}
 	return nil
 }

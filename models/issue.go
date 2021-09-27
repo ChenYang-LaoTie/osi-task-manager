@@ -176,3 +176,9 @@ func QueryClosedIssueNoPoints(status, pointFlag int8) (eiu []EulerIssueUser) {
 	}
 	return
 }
+
+func QuerySigLabelMapping(slm *SigLabelMapping, field ...string) error {
+	o := orm.NewOrm()
+	err := o.Read(slm, field...)
+	return err
+}

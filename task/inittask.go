@@ -65,6 +65,13 @@ func InitTask() bool {
 		EulerRelBlackTask(relblacklist)
 	}
 
+	// Automatically add sig tags
+	autaddsiglabelflag, errxs := beego.AppConfig.Int("task::autaddsiglabelflag")
+	if autaddsiglabelflag == 1 && errxs == nil {
+		autaddsiglabel := beego.AppConfig.String("task::autaddsiglabel")
+		AutoAddSigLabelTask(autaddsiglabel)
+	}
+
 	// Export issue pr and number of comments
 	exportissueprflag, errxs := beego.AppConfig.Int("task::exportissueprflag")
 	if exportissueprflag == 1 && errxs == nil {

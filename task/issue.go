@@ -28,6 +28,14 @@ func EulerRelBlackTask(relblacklist string) {
 	logs.Info("End of releases tasks in the blacklist...")
 }
 
+// Automatically add sig tags
+func AutoAddSigLabelTask(autaddsiglabel string) {
+	logs.Info("Automatically add sig tags start...")
+	labelTask := toolbox.NewTask("AutoAddLabelTask", autaddsiglabel, taskhandler.AutoAddLabelTask)
+	toolbox.AddTask("AutoAddLabelTask", labelTask)
+	logs.Info("End of Automatically add sig tags...")
+}
+
 // The classification is released, and the questions that the user has not dealt with
 // during the synchronization phase are redistributed to others
 func RelOvertimeClaimedTasks(reottask string) {

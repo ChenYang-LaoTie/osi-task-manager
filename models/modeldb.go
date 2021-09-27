@@ -124,6 +124,15 @@ type EulerOriginIssue struct {
 	DeleteTime     string `orm:"size(32);column(delete_time);null"`
 	GrabTime       string `orm:"size(32);column(grab_time)" description:"记录当前issue抓取的时间"`
 	RecordCount    int    `orm:"default(1);column(record_count)" description:"记录题目释放次数"`
+	LabelFlag      int8   `orm:"default(1);column(label_flag)" description:"1:未打sig标签;2:已打sig标签"`
+}
+
+// sig label mapping
+type SigLabelMapping struct {
+	Id          int64  `orm:"pk;auto;column(id)"`
+	EulerLabel  string `orm:"column(euler_label);size(512);unique" description:"原来已有sig标签"`
+	InternLabel string `orm:"column(intern_label);size(512)" description:"开源实习sig标签"`
+	CreateTime  string `orm:"size(32);column(create_time)"`
 }
 
 // Individual claiming the issue task pool
@@ -252,7 +261,7 @@ func CreateDb() bool {
 			new(EulerUserIntegCount), new(EulerUserIntegDetail),
 			new(EulerUnassignUser), new(EulerUserClaimRecord),
 			new(EulerBlackUser), new(EulerOriginPr),
-			new(EmailList),
+			new(EmailList), new(SigLabelMapping),
 		)
 		logs.Info("table create success!")
 		errosyn := orm.RunSyncdb("default", false, true)

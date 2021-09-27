@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"osi-task-manager/common"
@@ -10,10 +11,16 @@ type PointValue struct {
 	Integration int64
 }
 
-func QueryOpenEulerIssueAll() (eoi []EulerOriginIssue) {
+func QueryOpenEulerIssueAll(labelFlag int8) (eoi []EulerOriginIssue) {
 	o := orm.NewOrm()
 	var num int64
-	num, err := o.Raw("select * from osi_euler_origin_issue").QueryRows(&eoi)
+	sql := ""
+	if labelFlag > 0 {
+		sql = fmt.Sprintf(`select * from osi_euler_origin_issue where label_flag = %d`, labelFlag)
+	} else {
+		sql = fmt.Sprintf(`select * from osi_euler_origin_issue`)
+	}
+	num, err := o.Raw(sql).QueryRows(&eoi)
 	if num > 0 {
 		logs.Info("QueryOpenEulerIssueAll, num: ", num)
 	} else {
