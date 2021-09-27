@@ -515,6 +515,7 @@ func AutoAddLabelTask() error {
 							logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
 						}
 					} else {
+						UpdateIssueLabels(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner, labels)
 						ei.IssueLabel = labels
 						upErr := models.UpdateEulerOriginIssue(&ei, "IssueLabel")
 						if upErr != nil {
