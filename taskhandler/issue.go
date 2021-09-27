@@ -503,7 +503,7 @@ func AutoAddLabelTask() error {
 				}
 				labels := ""
 				if len(repLabelSlice) > 0 {
-					labels = strings.Join(repLabelList, ",")
+					labels = strings.Join(repLabelSlice, ",")
 				}
 				if len(labels) > 1 {
 					if labelFlag {
