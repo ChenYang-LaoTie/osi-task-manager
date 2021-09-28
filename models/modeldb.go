@@ -124,7 +124,7 @@ type EulerOriginIssue struct {
 	DeleteTime     string `orm:"size(32);column(delete_time);null"`
 	GrabTime       string `orm:"size(32);column(grab_time)" description:"记录当前issue抓取的时间"`
 	RecordCount    int    `orm:"default(1);column(record_count)" description:"记录题目释放次数"`
-	LabelFlag      int8   `orm:"default(1);column(label_flag)" description:"1:未打sig标签;2:已打sig标签"`
+	LabelFlag      int8   `orm:"default(0);column(label_flag)" description:"1:未打sig标签;2:已打sig标签"`
 }
 
 // sig label mapping
