@@ -463,7 +463,7 @@ func GetGitOriginIssue() error {
 
 func AutoAddLabelTask() error {
 	osiTaskLabel := beego.AppConfig.String("osi_task")
-	eulerIssue := models.QueryOpenEulerIssueAll(1)
+	eulerIssue := models.QueryOpenEulerIssueAll(0)
 	if len(eulerIssue) > 0 {
 		for _, ei := range eulerIssue {
 			eulerToken := common.GetEnvToken(ei.Owner)

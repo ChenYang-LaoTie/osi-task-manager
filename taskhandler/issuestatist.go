@@ -218,7 +218,7 @@ func EulerIssueStatistics() error {
 	common.CreateDir(dir)
 	totalFileSlice := make([]string, 0)
 	// Get user information
-	eulerIssue := models.QueryOpenEulerIssueAll(0)
+	eulerIssue := models.QueryOpenEulerIssueAll(-1)
 	if len(eulerIssue) > 0 {
 		fileName = "osi_openEuler_issue_pr"
 		fileName = fileName + "_" + GameStartTime[:10] + "_" + curDate + ".xlsx"
