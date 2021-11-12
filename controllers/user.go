@@ -87,7 +87,8 @@ func (u *InternStudentControllers) Post() {
 				su.EmailAddr = stdData.Email
 				su.GitUserId = gui.Login
 				su.UserName = gui.Login
-				upErr := models.UpdateStdUser(&su, "Status", "UpdateTime", "EmailAddr", "GitUserId")
+				su.TestFlag = 2
+				upErr := models.UpdateStdUser(&su, "Status", "UpdateTime", "EmailAddr", "GitUserId", "TestFlag")
 				if upErr != nil {
 					logs.Error("InternStudentControllers, upErr: ", upErr)
 				}
@@ -96,7 +97,7 @@ func (u *InternStudentControllers) Post() {
 				su.Status = 1
 				su.GitUserId = gui.Login
 				su.CreateTime = common.GetCurTime()
-				su.TestFlag = 1
+				su.TestFlag = 2
 				su.UserName = gui.Login
 				su.GitId = gui.GitId
 				num, inErr := models.InsertStdUser(&su)

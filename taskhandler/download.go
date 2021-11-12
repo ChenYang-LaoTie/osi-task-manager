@@ -99,6 +99,7 @@ func ProcStdData(excelData [][]string, accessToken string) {
 				su.GitUserId = gui.Login
 				su.CreateTime = common.GetCurTime()
 				su.Status = 1
+				su.TestFlag = 2
 				su.UserName = gui.Login
 				inNum, inErr := models.InsertStdUser(&su)
 				if inNum > 0 {
@@ -110,9 +111,10 @@ func ProcStdData(excelData [][]string, accessToken string) {
 				su.EmailAddr = emailAddr
 				su.UpdateTime = common.GetCurTime()
 				su.Status = 1
+				su.TestFlag = 2
 				su.GitUserId = gui.Login
 				su.UserName = gui.Login
-				upErr := models.UpdateStdUser(&su, "EmailAddr", "UpdateTime", "Status", "GitUserId")
+				upErr := models.UpdateStdUser(&su, "EmailAddr", "UpdateTime", "Status", "GitUserId", "TestFlag")
 				if upErr == nil {
 					logs.Info("UpdateStdUser success, upErr:", upErr)
 				} else {
