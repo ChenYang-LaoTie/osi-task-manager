@@ -6,6 +6,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"os"
@@ -25,7 +26,7 @@ type Student struct {
 }
 
 type UserInfo struct {
-	Token       string `json:"token"`
+	Token       string    `json:"token"`
 	StudentData []Student `json:"studentData"`
 }
 
@@ -123,7 +124,7 @@ type Tutor struct {
 }
 
 type TutorInfo struct {
-	Token     string `json:"token"`
+	Token     string  `json:"token"`
 	TutorData []Tutor `json:"tutorData"`
 }
 
@@ -205,5 +206,70 @@ func (u *InternTutorControllers) Post() {
 	}
 	u.Ctx.ResponseWriter.WriteHeader(200)
 	u.Ctx.WriteString("success")
+	return
+}
+
+type InternAdminLoginControllers struct {
+	beego.Controller
+}
+
+type Result struct {
+	Token  string `json:"token"`
+	UserId int  `json:"userId"`
+}
+
+type LoginResData struct {
+	LoginData Result `json:"loginData"`
+	Mesg      string `json:"message"`
+	Code      int    `json:"code"`
+}
+
+func (c *InternAdminLoginControllers) RetData(resp LoginResData) {
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+// @Title UserLogin
+// @Description UserLogin
+// @Param	body		body 	models.User	true		"body for user content"
+// @Success 200 {int} models.User.ID
+// @Failure 403 body is empty
+// @router / [post]
+func (u *InternAdminLoginControllers) Post() {
+	req := make(map[string]interface{})
+	resp := LoginResData{}
+	resp.Code = 405
+	resp.Mesg = "Login failed"
+	resp.LoginData = Result{}
+	err := json.Unmarshal(u.Ctx.Input.RequestBody, &req)
+	if err != nil {
+		logs.Error(err)
+		u.RetData(resp)
+		return
+	}
+	//Judge whether it is legal
+	if req["userName"] == nil || req["passWord"] == nil {
+		resp.Mesg = "Data error: username or password"
+		logs.Error("Data error: username or password")
+		u.RetData(resp)
+		return
+	}
+	password := fmt.Sprintf("%s", req["passWord"])
+	username := fmt.Sprintf("%s", req["userName"])
+	loginInfo := models.LoginUserToken{UserName: username, PassWord: password}
+	luErr := models.QueryLoginUser(&loginInfo, "UserName", "PassWord")
+	if luErr != nil {
+		logs.Error("Administrator login information does not exist, luErr: ", luErr)
+		resp.Mesg = "Administrator login information does not exist"
+		u.RetData(resp)
+		return
+	}
+	if loginInfo.UerId > 0 {
+		resp.LoginData.UserId = loginInfo.UerId
+		resp.LoginData.Token = loginInfo.AesKey
+		resp.Code = 200
+		resp.Mesg = "success"
+	}
+	u.RetData(resp)
 	return
 }
