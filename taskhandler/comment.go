@@ -370,7 +370,7 @@ func AddEulerUserUnassignCount(userId, gitId int64, userName string, relFlag int
 				es.CountValue += 1
 				es.UpdateTime = common.GetCurTime()
 				passiveReleasesCount := beego.AppConfig.DefaultInt("claimed::passive_release_count", 3)
-				if es.CountValue > int8(passiveReleasesCount) {
+				if int(es.CountValue) > passiveReleasesCount {
 					afterDate, beErr := beego.AppConfig.Int("claimed::passive_release_date")
 					if beErr != nil {
 						afterDate = 90
@@ -460,7 +460,7 @@ func VerifyEulerUserClaimPerm(gitId, userId int64, userName, issueNumber, repo, 
 		activeReleasesCount := beego.AppConfig.DefaultInt("claimed::active_releases_count", 6)
 		passiveReleaseCount := beego.AppConfig.DefaultInt("claimed::passive_release_count", 3)
 		for _, es := range eus {
-			if es.ReleaseFlag == 1 && es.CountValue > int8(activeReleasesCount) {
+			if es.ReleaseFlag == 1 && int(es.CountValue) > activeReleasesCount {
 				cc := fmt.Sprintf(IssueUnassignClaimCount, userName)
 				AddCommentToIssue(cc, issueNumber, owner, repo, eulerToken)
 				et := EulerIssueUserRecordTp{UserId: userId, OrId: eoi.OrId, IssueNumber: issueNumber,
@@ -469,7 +469,7 @@ func VerifyEulerUserClaimPerm(gitId, userId int64, userName, issueNumber, repo, 
 				return errors.New("The number of canceled tasks has reached the line, " +
 					"and the task cannot be claimed again")
 			}
-			if es.ReleaseFlag == 2 && es.CountValue > int8(passiveReleaseCount) {
+			if es.ReleaseFlag == 2 && int(es.CountValue) > passiveReleaseCount {
 				cc := fmt.Sprintf(IssueUnassignedClaimCount, userName)
 				AddCommentToIssue(cc, issueNumber, owner, repo, eulerToken)
 				et := EulerIssueUserRecordTp{UserId: userId, OrId: eoi.OrId, IssueNumber: issueNumber,
