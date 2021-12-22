@@ -466,11 +466,11 @@ func staticIssueComment(value map[string]interface{},
 
 func TaskDueDateByPoints(point int) (dueDate int) {
 	if point <= 5 {
-		dueDate = 7
+		dueDate = 3650
 	} else if point > 5 && point <= 10 {
-		dueDate = 14
+		dueDate = 3650
 	} else if point > 10 && point < 20 {
-		dueDate = 180
+		dueDate = 3650
 	} else if point >= 20 {
 		dueDate = 3650
 	}
