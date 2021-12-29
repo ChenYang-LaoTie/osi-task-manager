@@ -31,8 +31,8 @@ const (
 	IssueClaimSuccessSend = `%v, 感谢您认领此任务, 请及时跟导师沟通, 导师审核通过后才能承担此任务, 否则任务无效.`
 
 	// The user has not signed up or signed up successfully, unable to receive the task
-	IssueClaiNotSigned     = `@%v , 您还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://openeuler.org/zh/interaction/intership).`
-	IssueClaiNotSignedSend = `%v, 还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://openeuler.org/zh/interaction/intership).`
+	IssueClaiNotSigned     = `@%v , 您还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://www.openeuler.org/zh/intership/).`
+	IssueClaiNotSignedSend = `%v, 还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://www.openeuler.org/zh/intership/).`
 	// The user did not complete the test task
 	IssueTestPrCommit     = `@%v , 您还未通过开源实习测试任务, 无法领取此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
 	IssueTestPrCommitSend = `%v, 还未通过开源实习测试任务, 无法领取此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
@@ -50,8 +50,8 @@ const (
 	IssueStdUnApproveTaskSend = `%v, 此任务认领失败, 请认领其他任务, 非常感谢您的参与.`
 
 	// completed
-	IssueClaimCheckSubmit      = `@%v , 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://openeuler.org/zh/interaction/intership).`
-	IssueClaimCheckSubmitSend  = `%v, 提交此任务前, 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://openeuler.org/zh/interaction/intership).`
+	IssueClaimCheckSubmit      = `@%v , 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://www.openeuler.org/zh/intership/).`
+	IssueClaimCheckSubmitSend  = `%v, 提交此任务前, 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://www.openeuler.org/zh/intership/).`
 	IssueClaimTestPrSubmit     = `@%v , 您还未通过开源实习测试任务, 无法提交此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
 	IssueClaimTestPrSubmitSend = `%v, 提交此任务前, 还未通过开源实习测试任务, 无法提交任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
 	IssueClaimComplete         = `@%v , 请关注您提交的pr审核进度, 跟进相关负责人审核, pr合入后可获得积分. 注: 提交pr时, 请务必在pr描述里添加此issue编号(#issue编号), 谢谢!`
