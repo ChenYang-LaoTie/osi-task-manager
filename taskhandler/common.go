@@ -255,6 +255,7 @@ func UpdateIssueLabels(token, repo, issueNum, owner, label string) bool {
 			logs.Error("UpdateIssueLabels, Failed to update label, err: ", ok)
 			return false
 		}
+		logs.Info("Update label succeeded, label: ", label)
 	}
 	return true
 }
