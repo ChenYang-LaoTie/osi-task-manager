@@ -883,44 +883,15 @@ func ReduceLabel(issuePath, issueNumber, eulerToken, owner string, eoi models.Eu
 			labels = strings.Join(tmpLabel, ",")
 		}
 	}
-	UpdateIssueLabels(eulerToken, issuePath, issueNumber, owner, labels)
-	eoi.IssueLabel = labels
-	eoi.UpdateTime = common.GetCurTime()
-	upErr := models.UpdateEulerOriginIssue(&eoi, "IssueLabel", "UpdateTime")
-	if upErr != nil {
-		logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
-	}
-}
-
-// Query label
-func QueryIssueLabels(token, repo, issueNum, owner string) ([]string, []string) {
-	allLabelSlice := make([]string, 0)
-	labelSlice := make([]string, 0)
-	totalLabel := beego.AppConfig.String("totallabel")
-	totalLabelList := strings.Split(totalLabel, ",")
-	url := fmt.Sprintf("https://gitee.com/api/v5/repos/%v/%v/issues/%v/labels?access_token=%v", owner, repo, issueNum, token)
-	labelData, err := util.HTTPGet(url)
-	if err == nil && labelData != nil {
-		for _, value := range labelData {
-			if _, ok := value["id"]; !ok {
-				logs.Error("QueryIssueLabels， labelData, err: ", ok)
-				continue
-			}
-			labelStr := value["name"].(string)
-			allLabelSlice = append(allLabelSlice, labelStr)
-			labFlag := false
-			for _, lab := range totalLabelList {
-				if strings.ToLower(labelStr) == strings.ToLower(lab) {
-					labFlag = true
-					break
-				}
-			}
-			if !labFlag {
-				labelSlice = append(labelSlice, labelStr)
-			}
+	if len(labels) > 0 {
+		UpdateIssueLabels(eulerToken, issuePath, issueNumber, owner, labels)
+		eoi.IssueLabel = labels
+		eoi.UpdateTime = common.GetCurTime()
+		upErr := models.UpdateEulerOriginIssue(&eoi, "IssueLabel", "UpdateTime")
+		if upErr != nil {
+			logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
 		}
 	}
-	return labelSlice, allLabelSlice
 }
 
 func TutApproveTask(payload models.CommentPayload, eulerToken, owner string, eoi models.EulerOriginIssue) {

@@ -2,6 +2,7 @@ package taskhandler
 
 import (
 	"fmt"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"osi-task-manager/util"
 	"regexp"
@@ -196,6 +197,37 @@ func SendPrivateLetters(access, content, useName string) {
 		logs.Error(err)
 	}
 	logs.Info("Send private message:", res)
+}
+
+// Query label
+func QueryIssueLabels(token, repo, issueNum, owner string) ([]string, []string) {
+	allLabelSlice := make([]string, 0)
+	labelSlice := make([]string, 0)
+	totalLabel := beego.AppConfig.String("totallabel")
+	totalLabelList := strings.Split(totalLabel, ",")
+	url := fmt.Sprintf("https://gitee.com/api/v5/repos/%v/%v/issues/%v/labels?access_token=%v", owner, repo, issueNum, token)
+	labelData, err := util.HTTPGet(url)
+	if err == nil && labelData != nil {
+		for _, value := range labelData {
+			if _, ok := value["id"]; !ok {
+				logs.Error("QueryIssueLabels， labelData, err: ", ok)
+				continue
+			}
+			labelStr := value["name"].(string)
+			allLabelSlice = append(allLabelSlice, labelStr)
+			labFlag := false
+			for _, lab := range totalLabelList {
+				if strings.ToLower(labelStr) == strings.ToLower(lab) {
+					labFlag = true
+					break
+				}
+			}
+			if !labFlag {
+				labelSlice = append(labelSlice, labelStr)
+			}
+		}
+	}
+	return labelSlice, allLabelSlice
 }
 
 func UpdateIssueLabels(token, repo, issueNum, owner, label string) bool {

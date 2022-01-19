@@ -231,7 +231,7 @@ func DownloadExcel(efi ExcelFileInfo) error {
 		logs.Error(err)
 		return err
 	}
-	//logs.Info("body: \n", string(body), "url: ", gitUrl)
+	logs.Info("body: \n", string(body), "url: ", gitUrl)
 	var contents map[string]interface{}
 	err = json.Unmarshal(body, &contents)
 	if err != nil {
