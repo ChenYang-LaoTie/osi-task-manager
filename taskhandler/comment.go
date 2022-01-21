@@ -144,7 +144,7 @@ func HandleIssueStateChange(issueHook *models.IssuePayload) error {
 					logs.Error("QueryStdUser, euErr: ", euErr)
 				}
 			}
-			resBool := CloseIssueAddPoints(eulerToken, owner, repoPath, issueHook.Issue.Number, eoi)
+			resBool := CloseIssueAddPoints(eulerToken, owner, repoPath, issueHook.Issue.Number, eu.GitUserId, eoi)
 			if resBool {
 				if eu.UserId > 0 {
 					is := fmt.Sprintf(IssueClosePointsComplete, eu.GitUserId, eoi.TaskScore)

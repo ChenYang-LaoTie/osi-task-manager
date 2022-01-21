@@ -514,7 +514,7 @@ func QueryIssueToPr(token, owner, repo, issueNum string) []map[string]interface{
 	return issuePr
 }
 
-func CloseIssueAddPoints(token, owner, repo, issueNum string, eoi models.EulerOriginIssue) bool {
+func CloseIssueAddPoints(token, owner, repo, issueNum, gitUserId string, eoi models.EulerOriginIssue) bool {
 	prRes := QueryIssueToPr(token, owner, repo, issueNum)
 	if len(prRes) == 0 {
 		logs.Error("The issue is not associated with pr, "+
@@ -526,10 +526,12 @@ func CloseIssueAddPoints(token, owner, repo, issueNum string, eoi models.EulerOr
 		if _, ok := v["id"]; !ok {
 			continue
 		}
+		user := v["user"].(map[string]interface{})
+		userLogin := user["login"].(string)
 		prNumber := int64(v["number"].(float64))
 		mergeState := v["state"].(string)
 		mergeable := v["mergeable"].(bool)
-		if mergeable && mergeState == "merged" {
+		if mergeable && mergeState == "merged" && userLogin == gitUserId {
 			// Calculate the points earned by users
 			pointLock.Lock()
 			CalculateUserPoints(token, eoi)
@@ -646,11 +648,11 @@ func CalculateIssuePoints() error {
 				logs.Error("namespace error: ", eu.Owner)
 				continue
 			}
-			resBool := CloseIssueAddPoints(eulerToken, eu.Owner, eu.RepoPath, eu.IssueNumber, eoi)
+			su := models.StdUser{UserId: eu.UserId, Status: 1}
+			euErr := models.QueryStdUser(&su, "UserId", "Status")
+			resBool := CloseIssueAddPoints(eulerToken, eu.Owner, eu.RepoPath, eu.IssueNumber, su.GitUserId, eoi)
 			if resBool {
 				if eu.UserId > 0 {
-					su := models.StdUser{UserId: eu.UserId, Status: 1}
-					euErr := models.QueryStdUser(&su, "UserId", "Status")
 					if euErr != nil {
 						logs.Error("QueryStdUser, euErr: ", euErr)
 					} else {
