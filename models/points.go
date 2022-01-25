@@ -16,7 +16,7 @@ func QueryOpenEulerIssueAll(labelFlag int8) (eoi []EulerOriginIssue) {
 	var num int64
 	sql := ""
 	if labelFlag >= 0 {
-		sql = fmt.Sprintf(`select * from osi_euler_origin_issue where label_flag = %d`, labelFlag)
+		sql = fmt.Sprintf(`select * from osi_euler_origin_issue where label_flag <= %d`, labelFlag)
 	} else {
 		sql = fmt.Sprintf(`select * from osi_euler_origin_issue`)
 	}

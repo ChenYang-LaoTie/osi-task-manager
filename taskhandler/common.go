@@ -230,6 +230,36 @@ func QueryIssueLabels(token, repo, issueNum, owner string) ([]string, []string) 
 	return labelSlice, allLabelSlice
 }
 
+func AddIssueLabel(token, repo, issueNum, owner, label string) bool {
+	labelStr := label
+	labelSlice := strings.Split(label, ",")
+	if len(labelSlice) > 0 {
+		laSlice := []string{}
+		for _, la := range labelSlice {
+			laSlice = append(laSlice, fmt.Sprintf("\"%v\"", la))
+		}
+		if len(laSlice) > 0 {
+			labelStr = strings.Join(laSlice, ",")
+		}
+	}
+	url := fmt.Sprintf("https://gitee.com/api/v5/repos/%v/%v/issues/%v/labels?access_token=%v", owner, repo, issueNum, token)
+	reqBody := fmt.Sprintf("[%v]", labelStr)
+	logs.Info("UpdateIssueLabels, reqBody: ", reqBody)
+	resp, err := util.HTTPPostLabel(url, reqBody)
+	if err != nil {
+		logs.Error("UpdateIssueLabels, Failed to update label,  err: ", err)
+		return false
+	}
+	if len(resp) > 0 {
+		if _, ok := resp[0]["id"]; !ok {
+			logs.Error("UpdateIssueLabels, Failed to update label, err: ", ok)
+			return false
+		}
+		logs.Info("Update label succeeded, label: ", label)
+	}
+	return true
+}
+
 func UpdateIssueLabels(token, repo, issueNum, owner, label string) bool {
 	labelStr := label
 	labelSlice := strings.Split(label, ",")

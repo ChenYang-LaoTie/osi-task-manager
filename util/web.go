@@ -128,6 +128,44 @@ func HTTPPut(url string, requestBody string) ([]map[string]interface{}, error) {
 	return iss, nil
 }
 
+// http post label
+func HTTPPostLabel(url string, requestBody string) ([]map[string]interface{}, error) {
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer([]byte(requestBody)))
+	defer common.Catchs()
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		logs.Error("PATCH request failed, err: ", err, "body: ", requestBody)
+		return nil, err
+	}
+	defer resp.Body.Close()
+	logs.Info("HTTPPut, response Status:", resp.Status)
+	logs.Info("HTTPPut, response Headers:", resp.Header)
+	status, _ := strconv.Atoi(resp.Status)
+	if status > 300 {
+		logs.Error("Patch request failed, err: ", err, "body: ", requestBody)
+		return nil, err
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	fmt.Println("response Body:", string(body))
+	if err != nil || body == nil {
+		logs.Error("PUT failed, err: ", err, "body: ", requestBody)
+		return nil, err
+	}
+	logs.Info("PUT successed!, body: ", string(body))
+	var iss []map[string]interface{}
+	err = json.Unmarshal(body, &iss)
+	if err != nil {
+		logs.Error(err, string(body))
+		return nil, err
+	}
+	return iss, nil
+}
+
 //HTTPGet get request
 func HTTPGet(url string) ([]map[string]interface{}, error) {
 	resp, err := http.Get(url)
