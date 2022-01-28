@@ -112,6 +112,8 @@ const (
 	IssueClosePointsComplete      = `@%v , 您的pr已合入社区, 已获得 %v 积分, 谢谢您的参与.`
 	IssueClosedByTry              = `issue: %v, 已经被@%v 关闭, 如果未提交pr, 请及时提交并关联issue编号, 如有其他疑问, 请及时联系您的导师处理, 谢谢!`
 	IssueForciGiveUpBlack         = `@%v , 由于您违规操作, 此次认领无效.`
+	// Unable to close issue notification
+	issueUnableCloseNot = `@%v , 关闭当前issue条件为=>学生完成pr, 导师在issue评论区输入:/intern-done,正常关闭issue,学生获得积分; 导师issue评论区输入:/close, 任何情况下可以关闭.`
 )
 
 const (

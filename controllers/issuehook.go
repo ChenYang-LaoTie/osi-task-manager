@@ -89,8 +89,8 @@ func (c *InternHookEventControllers) handleNoteDate() {
 	}
 	cuAccount := hookNote.Comment.User.UserName
 	if cuAccount != "" && len(cuAccount) > 1 {
-		if cuAccount == "openeuler-ci-bot" {
-			logs.Error("openeuler-ci-bot, Ignore this comment")
+		if cuAccount == "openeuler-ci-bot" || cuAccount == "i-robot" {
+			logs.Error(cuAccount, ", Ignore this comment")
 			return
 		}
 	}
@@ -114,8 +114,8 @@ func (c *InternHookEventControllers) handlePullReq() {
 	}
 	cuAccount := prHook.Sender.UserName
 	if cuAccount != "" && len(cuAccount) > 1 {
-		if cuAccount == "openeuler-ci-bot" {
-			logs.Error("openeuler-ci-bot, Ignore this comment")
+		if cuAccount == "openeuler-ci-bot" || cuAccount == "i-robot" {
+			logs.Error(cuAccount, ", Ignore this comment")
 			return
 		}
 	}
@@ -178,8 +178,8 @@ func (c *InternHookEventControllers) handleIssue() {
 	}
 	cuAccount := issueHook.Sender.UserName
 	if cuAccount != "" && len(cuAccount) > 1 {
-		if cuAccount == "openeuler-ci-bot" {
-			logs.Error("openeuler-ci-bot, Ignore this comment")
+		if cuAccount == "openeuler-ci-bot" || cuAccount == "i-robot" {
+			logs.Error(cuAccount, ", Ignore this comment")
 			return
 		}
 	}
@@ -227,4 +227,3 @@ func (c *InternHookEventControllers) handleIssue() {
 		taskhandler.DelHookIssue(&issueHook)
 	}
 }
-

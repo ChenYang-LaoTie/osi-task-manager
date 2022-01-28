@@ -127,41 +127,13 @@ func HandleIssueStateChange(issueHook *models.IssuePayload) error {
 				logs.Error("UpdateIssueToGit, upErr: ", upErr)
 			}
 		case IssueCloseState:
-			eafErr := EulerAccountFreeze(issueHook.Issue.Number, issueHook.Repository.Path, owner, eulerToken, eoi)
-			if eafErr != nil {
-				logs.Error("eafErr: ", eafErr)
-				return eafErr
+			is := fmt.Sprintf(issueUnableCloseNot, issueHook.Sender.Login)
+			AddCommentToIssue(is, issueHook.Issue.Number, owner, issueHook.Repository.Path, eulerToken)
+			upErr := UpdateIssueToGit(eulerToken, owner, repoPath, IssueOpenState, eoi)
+			if upErr != nil {
+				logs.Error("UpdateIssueToGit, upErr: ", upErr)
 			}
-			eiu := models.EulerIssueUser{OrId: eoi.OrId}
-			eiuErr := models.QueryEulerIssueUser(&eiu, "OrId")
-			if eiuErr != nil {
-				logs.Error("QueryEulerIssueUser, eiuErr: ", eiuErr)
-			}
-			eu := models.StdUser{UserId: eiu.UserId, Status: 1}
-			if eiu.UserId > 0 {
-				euErr := models.QueryStdUser(&eu, "UserId", "Status")
-				if euErr != nil {
-					logs.Error("QueryStdUser, euErr: ", euErr)
-				}
-			}
-			resBool := CloseIssueAddPoints(eulerToken, owner, repoPath, issueHook.Issue.Number, eu.GitUserId, eoi)
-			if resBool {
-				if eu.UserId > 0 {
-					is := fmt.Sprintf(IssueClosePointsComplete, eu.GitUserId, eoi.TaskScore)
-					AddCommentToIssue(is, issueHook.Issue.Number, owner, issueHook.Repository.Path, eulerToken)
-				}
-			}
-			if eiu.Status != 4 {
-				eiu.Status = 4
-				eiu.UpdateTime = common.GetCurTime()
-				upeiuErr := models.UpdateEulerIssueUser(&eiu, "Status", "UpdateTime")
-				if upeiuErr != nil {
-					logs.Error("UpdateEulerIssueUser, upeiuErr: ", upeiuErr)
-				}
-				iss := fmt.Sprintf(IssueClosedByTry, eoi.GitUrl, issueHook.Sender.UserName)
-				SendPrivateLetters(eulerToken, iss, eu.UserName)
-			}
-			eoi.IssueState = IssueCloseState
+			eoi.IssueState = IssueOpenState
 			upIssueErr := models.UpdateEulerOriginIssue(&eoi, "IssueState")
 			if upIssueErr != nil {
 				logs.Error("UpdateEulerOriginIssue, upIssueErr: ", upIssueErr)
@@ -238,6 +210,7 @@ func HandleIssueComment(payload models.CommentPayload) {
 	osiTutApproveCmd := beego.AppConfig.DefaultString("osiTutApproveCmd", "/intern-apprrove")
 	osiTutUnapproveCmd := beego.AppConfig.DefaultString("osiTutUnapproveCmd", "/intern-unapprove")
 	osiStdCompletedCmd := beego.AppConfig.DefaultString("osiStdCompletedCmd", "/intern-completed")
+	osiTutDoneCmd := beego.AppConfig.DefaultString("osiTutDoneCmd", "/intern-done")
 	osiUnassignCmd := beego.AppConfig.DefaultString("osiUnassignCmd", "/intern-unassign")
 	osiFailCmd := beego.AppConfig.DefaultString("osiFailCmd", "/intern-fail")
 	closeIssueCmd := beego.AppConfig.DefaultString("close_issue", "/close")
@@ -299,14 +272,53 @@ func HandleIssueComment(payload models.CommentPayload) {
 		} else if strings.HasPrefix(cBody, closeIssueCmd) {
 			// close cmd
 			AssignCloseIssue(payload, eulerToken, owner, eoi)
+		} else if strings.HasPrefix(cBody, osiTutDoneCmd) {
+			// done cmd
+			AssignDoneIssue(payload, eulerToken, owner, eoi)
 		}
 	}
+}
+
+func AssignDoneIssue(payload models.CommentPayload, eulerToken, owner string, eoi models.EulerOriginIssue) {
+	if eoi.IssueState == "closed" {
+		// The issue has been closed and cannot be operated again
+		logs.Error("AssignDoneIssue， The issue has been closed and cannot be operated again,issuetmp: ", eoi)
+		return
+	}
+	tu := models.TutUser{GitId: payload.Comment.User.Id, Status: 1}
+	tuErr := models.QueryTutUser(&tu, "GitId", "Status")
+	// Non-reviewers, cannot modify the status of the issue
+	if tu.UserId > 0 || eoi.GitId == payload.Comment.User.Id {
+		eafErr := EulerAccountFreeze(payload.Issue.Number, payload.Repository.Path, owner, eulerToken, eoi)
+		if eafErr != nil {
+			logs.Error("AssignDoneIssue， eafErr: ", eafErr)
+			return
+		}
+		upErr := UpdateIssueToGit(eulerToken, owner, eoi.RepoPath, IssueCloseState, eoi)
+		if upErr != nil {
+			logs.Error("AssignDoneIssue, upErr: ", upErr)
+			return
+		}
+		// Calculate the points earned by users
+		pointLock.Lock()
+		CalculateUserPoints(eulerToken, eoi)
+		pointLock.Unlock()
+		// Modify data status
+		eoi.IssueState = IssueCloseState
+		eoi.UpdateTime = common.GetCurTime()
+		upIssueErr := models.UpdateEulerOriginIssue(&eoi, "IssueState", "UpdateTime")
+		if upIssueErr != nil {
+			logs.Error("AssignDoneIssue, upIssueErr: ", upIssueErr)
+		}
+		return
+	}
+	logs.Error("AssignDoneIssue, tuErr: ", tuErr)
 }
 
 func AssignCloseIssue(payload models.CommentPayload, eulerToken, owner string, eoi models.EulerOriginIssue) {
 	if eoi.IssueState == "closed" {
 		// The issue has been closed and cannot be operated again
-		logs.Error("The issue has been closed and cannot be operated again,issuetmp: ", eoi)
+		logs.Error("AssignCloseIssue， The issue has been closed and cannot be operated again,issuetmp: ", eoi)
 		return
 	}
 	tu := models.TutUser{GitId: payload.Comment.User.Id, Status: 1}
@@ -323,10 +335,6 @@ func AssignCloseIssue(payload models.CommentPayload, eulerToken, owner string, e
 			logs.Error("UpdateIssueToGit, upErr: ", upErr)
 			return
 		}
-		// Calculate the points earned by users
-		pointLock.Lock()
-		CalculateUserPoints(eulerToken, eoi)
-		pointLock.Unlock()
 		// Modify data status
 		eoi.IssueState = IssueCloseState
 		eoi.UpdateTime = common.GetCurTime()
