@@ -127,7 +127,7 @@ func HandleIssueStateChange(issueHook *models.IssuePayload) error {
 				logs.Error("UpdateIssueToGit, upErr: ", upErr)
 			}
 		case IssueCloseState:
-			is := fmt.Sprintf(issueUnableCloseNot, issueHook.Sender.Login)
+			is := fmt.Sprintf(IssueUnableCloseNot, issueHook.Sender.Login)
 			AddCommentToIssue(is, issueHook.Issue.Number, owner, issueHook.Repository.Path, eulerToken)
 			upErr := UpdateIssueToGit(eulerToken, owner, repoPath, IssueOpenState, eoi)
 			if upErr != nil {

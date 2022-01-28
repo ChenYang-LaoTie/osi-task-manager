@@ -615,6 +615,8 @@ func CalculateUserPoints(eulerToken string, eoi models.EulerOriginIssue) {
 			} else {
 				iss := fmt.Sprintf(IssuePointSend, eoi.GitUrl, pointValue)
 				SendPrivateLetters(eulerToken, iss, eu.UserName)
+				is := fmt.Sprintf(IssueGetPointNot, eu.GitUserId, eoi.TaskScore)
+				AddCommentToIssue(is, eoi.IssueNumber, eoi.Owner, eoi.RepoPath, eulerToken)
 			}
 		} else {
 			logs.Error("InsertEulerUserIntegDetail, indErr:", indErr)
