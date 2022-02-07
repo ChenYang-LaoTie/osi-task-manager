@@ -89,9 +89,15 @@ func (c *InternHookEventControllers) handleNoteDate() {
 	}
 	cuAccount := hookNote.Comment.User.UserName
 	if cuAccount != "" && len(cuAccount) > 1 {
-		if cuAccount == "openeuler-ci-bot" || cuAccount == "i-robot" {
-			logs.Error(cuAccount, ", Ignore this comment")
-			return
+		botCuAccountStr := beego.AppConfig.String("repo::bot_cu_account")
+		botCuAccountList := strings.Split(botCuAccountStr, ",")
+		if len(botCuAccountList) > 0 {
+			for _, botCu := range botCuAccountList {
+				if cuAccount == botCu {
+					logs.Error(cuAccount, ", Ignore this comment")
+					return
+				}
+			}
 		}
 	}
 	hookPwd := beego.AppConfig.String("hook::hookpwd")
@@ -114,9 +120,15 @@ func (c *InternHookEventControllers) handlePullReq() {
 	}
 	cuAccount := prHook.Sender.UserName
 	if cuAccount != "" && len(cuAccount) > 1 {
-		if cuAccount == "openeuler-ci-bot" || cuAccount == "i-robot" {
-			logs.Error(cuAccount, ", Ignore this comment")
-			return
+		botCuAccountStr := beego.AppConfig.String("repo::bot_cu_account")
+		botCuAccountList := strings.Split(botCuAccountStr, ",")
+		if len(botCuAccountList) > 0 {
+			for _, botCu := range botCuAccountList {
+				if cuAccount == botCu {
+					logs.Error(cuAccount, ", Ignore this comment")
+					return
+				}
+			}
 		}
 	}
 	hookPwd := beego.AppConfig.String("hook::hookpwd")
@@ -178,9 +190,15 @@ func (c *InternHookEventControllers) handleIssue() {
 	}
 	cuAccount := issueHook.Sender.UserName
 	if cuAccount != "" && len(cuAccount) > 1 {
-		if cuAccount == "openeuler-ci-bot" || cuAccount == "i-robot" {
-			logs.Error(cuAccount, ", Ignore this comment")
-			return
+		botCuAccountStr := beego.AppConfig.String("repo::bot_cu_account")
+		botCuAccountList := strings.Split(botCuAccountStr, ",")
+		if len(botCuAccountList) > 0 {
+			for _, botCu := range botCuAccountList {
+				if cuAccount == botCu {
+					logs.Error(cuAccount, ", Ignore this comment")
+					return
+				}
+			}
 		}
 	}
 	hookPwd := beego.AppConfig.String("hook::hookpwd")
