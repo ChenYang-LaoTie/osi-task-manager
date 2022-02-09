@@ -30,26 +30,14 @@ type EulerIssueUserRecordTp struct {
 
 func CreateIssueBody(eulerToken, path, statusName string, eoi models.EulerOriginIssue) string {
 	requestBody := ""
-	//body := eoi.IssueBody
-	//requestBody = fmt.Sprintf(`{
-	//		"access_token": "%s",
-	//		"repo": "%s",
-	//		"title": "%s",
-	//		"state": "%s",
-	//		"body": "%s",
-	//		"assignee": "%s",
-	//		"labels": "%s",
-	//		"security_hole": "false"
-	//		}`, eulerToken, path, eoi.Title, statusName, body, eoi.IssueAssignee, eoi.IssueLabel)
 	requestBody = fmt.Sprintf(`{
 			"access_token": "%s",
-			"repo": "%s", 
-			"title": "%s",
+			"repo": "%s",
 			"state": "%s",
 			"assignee": "%s",
 			"labels": "%s",
 			"security_hole": "false"
-			}`, eulerToken, path, eoi.Title, statusName, eoi.IssueAssignee, eoi.IssueLabel)
+			}`, eulerToken, path, statusName, eoi.IssueAssignee, eoi.IssueLabel)
 	return requestBody
 }
 
@@ -57,6 +45,10 @@ func UpdateIssueToGit(eulerToken, owner, path, issueState string, eoi models.Eul
 	if eulerToken != "" && owner != "" && path != "" {
 		url := "https://gitee.com/api/v5/repos/" + owner + "/issues/" + eoi.IssueNumber
 		statusName := IssueStateRev(issueState)
+		_, toalLabelList := QueryIssueLabels(eulerToken, path, eoi.IssueNumber, owner)
+		if len(toalLabelList) > 0 {
+			eoi.IssueLabel = strings.Join(toalLabelList, ",")
+		}
 		requestBody := CreateIssueBody(eulerToken, path, statusName, eoi)
 		logs.Info("UpdateIssueToGit, isssue_body: ", requestBody)
 		if requestBody != "" && len(requestBody) > 1 {
@@ -69,14 +61,12 @@ func UpdateIssueToGit(eulerToken, owner, path, issueState string, eoi models.Eul
 				logs.Error("UpdateIssueToGit, Failed to create issue, err: ", ok)
 				return errors.New("Failed to call gitee to update the issue interface")
 			}
-			// Update the status of issue in db
-			if eoi.IssueState != statusName {
-				eoi.IssueState = statusName
-				upIssueErr := models.UpdateEulerOriginIssue(&eoi, "IssueState")
-				if upIssueErr != nil {
-					logs.Error("UpdateEulerOriginIssue, upIssueErr: ", upIssueErr)
-				}
-			}
+		}
+		// Update the status of issue in db
+		eoi.IssueState = statusName
+		upIssueErr := models.UpdateEulerOriginIssue(&eoi, "IssueState", "IssueLabel")
+		if upIssueErr != nil {
+			logs.Error("UpdateEulerOriginIssue, upIssueErr: ", upIssueErr)
 		}
 	}
 	return nil
