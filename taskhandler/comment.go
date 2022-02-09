@@ -31,6 +31,8 @@ type EulerIssueUserRecordTp struct {
 func CreateIssueBody(eulerToken, path, statusName string, eoi models.EulerOriginIssue) string {
 	requestBody := ""
 	body := eoi.IssueBody
+	body = strings.ReplaceAll(body, "`", "\\`")
+	body = strings.ReplaceAll(body, `"`, "\"")
 	requestBody = fmt.Sprintf(`{
 			"access_token": "%s",
 			"repo": "%s", 
