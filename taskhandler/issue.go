@@ -449,13 +449,18 @@ func GetGitOriginIssue() error {
 			logs.Error("namespace error: ", owner)
 			continue
 		}
-		ownerSlice := strings.Split(ownerStr, ",")
-		for _, owner := range ownerSlice {
-			orErr := GetOriginIssue(owner, eulerToken)
-			if orErr != nil {
-				logs.Error("Failed to get issue, owner: ", owner)
-				continue
-			}
+		//ownerSlice := strings.Split(ownerStr, ",")
+		//for _, owner := range ownerSlice {
+		//	orErr := GetOriginIssue(owner, eulerToken)
+		//	if orErr != nil {
+		//		logs.Error("Failed to get issue, owner: ", owner)
+		//		continue
+		//	}
+		//}
+		orErr := GetOriginIssue(owner, eulerToken)
+		if orErr != nil {
+			logs.Error("Failed to get issue, owner: ", owner)
+			continue
 		}
 	}
 	return nil
