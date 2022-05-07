@@ -4,16 +4,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"io/ioutil"
 	"net/http"
-	"osi-task-manager/common"
-	"osi-task-manager/models"
 	"sort"
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	"osi-task-manager/common"
+	"osi-task-manager/models"
 )
 
 var wg sync.WaitGroup
@@ -120,7 +121,7 @@ func handleIssueList(list []models.HookIssue) {
 		issueNumber := common.TrimString(v.Number)
 		repoPath := common.TrimString(v.Repository.Path)
 		owner := common.TrimString(v.Repository.NameSpace.Path)
-		if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) {
+		if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) || issueType == "Intern" {
 			eoi := models.EulerOriginIssue{Owner: owner, RepoPath: repoPath, IssueId: v.Id, IssueNumber: issueNumber}
 			eiErr := models.QueryEulerOriginIssue(&eoi, "Owner", "RepoPath", "IssueId", "IssueNumber")
 			if eiErr != nil {
@@ -288,7 +289,7 @@ func AddHookIssue(issueData *models.IssuePayload) {
 	issueNumber := common.TrimString(issueData.Issue.Number)
 	repoPath := common.TrimString(issueData.Repository.Path)
 	owner := common.TrimString(issueData.Repository.NameSpace)
-	if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) {
+	if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) || issueType == "Intern" {
 		eoi := models.EulerOriginIssue{Owner: owner, RepoPath: repoPath,
 			IssueId: issueData.Issue.Id, IssueNumber: issueNumber}
 		eiErr := models.QueryEulerOriginIssue(&eoi, "Owner", "RepoPath", "IssueId", "IssueNumber")
@@ -415,7 +416,7 @@ func DelHookIssue(issueData *models.IssuePayload) {
 	issueNumber := common.TrimString(issueData.Issue.Number)
 	repoPath := common.TrimString(issueData.Repository.Path)
 	owner := common.TrimString(issueData.Repository.NameSpace)
-	if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) {
+	if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) || issueType == "Intern" {
 		eoi := models.EulerOriginIssue{Owner: owner, RepoPath: repoPath,
 			IssueId: issueData.Issue.Id, IssueNumber: issueNumber}
 		eiErr := models.QueryEulerOriginIssue(&eoi, "Owner", "RepoPath", "IssueId", "IssueNumber")

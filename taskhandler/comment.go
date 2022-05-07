@@ -3,13 +3,14 @@ package taskhandler
 import (
 	"errors"
 	"fmt"
+	"strings"
+	"sync"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"osi-task-manager/common"
 	"osi-task-manager/models"
 	"osi-task-manager/util"
-	"strings"
-	"sync"
 )
 
 var pointLock sync.Mutex
@@ -81,7 +82,7 @@ func HandleIssueStateChange(issueHook *models.IssuePayload) error {
 	issueNumber := common.TrimString(issueHook.Issue.Number)
 	repoPath := common.TrimString(issueHook.Repository.Path)
 	owner := common.TrimString(issueHook.Repository.NameSpace)
-	if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) {
+	if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) || issueType == "Intern" {
 		eoi := models.EulerOriginIssue{Owner: owner, RepoPath: repoPath,
 			IssueId: issueId, IssueNumber: issueNumber}
 		eiErr := models.QueryEulerOriginIssue(&eoi, "Owner", "RepoPath", "IssueId", "IssueNumber")
@@ -227,7 +228,7 @@ func HandleIssueComment(payload models.CommentPayload) {
 	issueNumber := common.TrimString(payload.Issue.Number)
 	repoPath := common.TrimString(payload.Repository.Path)
 	owner := common.TrimString(payload.Repository.NameSpace)
-	if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) {
+	if issueType == CIssueType || strings.HasPrefix(issueTitle, CIssueType) || issueType == "Intern" {
 		eoi := models.EulerOriginIssue{Owner: owner, RepoPath: repoPath,
 			IssueId: issueId, IssueNumber: issueNumber}
 		eiErr := models.QueryEulerOriginIssue(&eoi, "Owner", "RepoPath", "IssueId", "IssueNumber")
