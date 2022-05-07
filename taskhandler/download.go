@@ -5,16 +5,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
-	"github.com/tealeg/xlsx"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"osi-task-manager/common"
-	"osi-task-manager/models"
 	"path/filepath"
 	"strconv"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	"github.com/tealeg/xlsx"
+	"osi-task-manager/common"
+	"osi-task-manager/models"
 )
 
 type ExcelFileInfo struct {
@@ -195,7 +196,7 @@ func ExcelParse(fileName string) [][]string {
 		return nil
 	}
 	length := len(xlFile.Sheets[0].Rows)
-	resourceArr := make([][]string, length-1)
+	resourceArr := make([][]string, 0, length-1)
 	for _, sheet := range xlFile.Sheets {
 		for rowIndex, row := range sheet.Rows {
 			if rowIndex == 0 {

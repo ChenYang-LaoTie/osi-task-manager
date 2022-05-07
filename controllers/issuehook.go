@@ -2,12 +2,13 @@ package controllers
 
 import (
 	"encoding/json"
+	"strings"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"osi-task-manager/common"
 	"osi-task-manager/models"
 	"osi-task-manager/taskhandler"
-	"strings"
 )
 
 var (
