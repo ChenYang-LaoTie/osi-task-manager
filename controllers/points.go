@@ -231,3 +231,61 @@ func (u *InternUserPointsControllers) Get() {
 		}
 	}
 }
+
+type InternUserSortPointsControllers struct {
+	beego.Controller
+}
+
+func (c *InternUserSortPointsControllers) RetData(resp ResData) {
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (u *InternUserSortPointsControllers) Get() {
+	req := u.Ctx.Request
+	addr := req.RemoteAddr
+	logs.Info("Method: ", req.Method, "Client request ip address: ", addr,
+		", Header: ", req.Header, ", body: ", req.Body)
+	resp := ResData{}
+	var upd []UserPointsData
+	token := u.GetString("token", "")
+	tokenBool := CheckLoginUser(token)
+
+	if !tokenBool {
+		resp.Code = 403
+		resp.Mesg = "Request parameter error"
+		u.RetData(resp)
+		return
+	}
+
+	ownerRepo := u.GetString("sort", "mindspore")
+
+	result, num, err := models.QuerySortPointsCount(ownerRepo)
+	if err != nil {
+		logs.Info(err)
+		resp.Code = 404
+		resp.Mesg = "Data does not exist"
+		resp.TotalCount = 0
+		logs.Error("Data does not exist")
+		u.RetData(resp)
+		return
+	}
+
+	for _, pd := range result {
+
+		var up UserPointsData
+		up.UserId = pd.UserId
+		up.GitUserId = pd.GiteeId
+		up.IntegralValue = pd.IntegralValue
+		upd = append(upd, up)
+	}
+
+	resp.Code = 200
+	resp.Mesg = "Data query is successful"
+	resp.TotalCount = num
+
+	resp.UserPoints = upd
+	u.RetData(resp)
+	return
+
+}

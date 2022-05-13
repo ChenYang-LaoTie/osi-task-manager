@@ -3,13 +3,14 @@ package taskhandler
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"io/ioutil"
 	"net/http"
+	"strings"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"osi-task-manager/common"
 	"osi-task-manager/models"
-	"strings"
 )
 
 func CheckPrAttribute(nameSpace, repoPath, title string) (flag int) {
