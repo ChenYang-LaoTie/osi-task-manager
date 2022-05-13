@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"osi-task-manager/common"
@@ -131,7 +132,7 @@ func QueryUserPointsDetailCount(userId int64) (count int64) {
 		Total int64
 	}{}
 	o := orm.NewOrm()
-	err := o.Raw("SELECT COUNT(id) total FROM osi_euler_user_integ_detail where user_id = ? " +
+	err := o.Raw("SELECT COUNT(id) total FROM osi_euler_user_integ_detail where user_id = ? "+
 		"and integral_value > 0 order by id asc", userId).QueryRow(&res)
 	if err != nil {
 		logs.Error("QueryUserPointsDetailCount, err: ", err)
@@ -153,4 +154,19 @@ func QueryUserPointsDetail(currentPage, pageSize int, userId int64) (eu []EulerU
 			common.GetCurTime(), ",err: ", err)
 	}
 	return
+}
+
+type SortPointCount struct {
+	UserId        int64
+	GiteeId       string
+	IntegralValue int64
+}
+
+func QuerySortPointsCount(ownerRepo string) ([]SortPointCount, int64, error) {
+	o := orm.NewOrm()
+	var result []SortPointCount
+	num, err := o.Raw("select o.user_id, ou.git_login as gitee_id, sum(o.integral_value) as integral_value from osi_euler_issue_user_complate o "+
+		"left join osi_std_user ou on o.user_id = ou.user_id "+
+		"where o.owner_repo = ? group by o.user_id order by integral_value DESC", ownerRepo).QueryRows(&result)
+	return result, num, err
 }

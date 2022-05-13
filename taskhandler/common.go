@@ -2,11 +2,12 @@ package taskhandler
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"osi-task-manager/util"
-	"regexp"
-	"strings"
 )
 
 // Get the constant of the original issue
@@ -32,8 +33,8 @@ const (
 	IssueClaimSuccessSend = `%v, 感谢您认领此任务, 请及时跟导师沟通, 导师审核通过后才能承担此任务, 否则任务无效.`
 
 	// The user has not signed up or signed up successfully, unable to receive the task
-	IssueClaiNotSigned     = `@%v , 您还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://www.openeuler.org/zh/intership/).`
-	IssueClaiNotSignedSend = `%v, 还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://www.openeuler.org/zh/intership/).`
+	IssueClaiNotSigned     = `@%v , 您还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://www.openeuler.org/zh/internship/).`
+	IssueClaiNotSignedSend = `%v, 还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://www.openeuler.org/zh/internship/).`
 	// The user did not complete the test task
 	IssueTestPrCommit     = `@%v , 您还未通过开源实习测试任务, 无法领取此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
 	IssueTestPrCommitSend = `%v, 还未通过开源实习测试任务, 无法领取此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
@@ -51,8 +52,8 @@ const (
 	IssueStdUnApproveTaskSend = `%v, 此任务认领失败, 请认领其他任务, 非常感谢您的参与.`
 
 	// completed
-	IssueClaimCheckSubmit      = `@%v , 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://www.openeuler.org/zh/intership/).`
-	IssueClaimCheckSubmitSend  = `%v, 提交此任务前, 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://www.openeuler.org/zh/intership/).`
+	IssueClaimCheckSubmit      = `@%v , 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://www.openeuler.org/zh/internship/).`
+	IssueClaimCheckSubmitSend  = `%v, 提交此任务前, 您还未通过开源实习资格的申请, 无法提交此任务, 请先完成[实习申请](https://www.openeuler.org/zh/internship/).`
 	IssueClaimTestPrSubmit     = `@%v , 您还未通过开源实习测试任务, 无法提交此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
 	IssueClaimTestPrSubmitSend = `%v, 提交此任务前, 还未通过开源实习测试任务, 无法提交任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
 	IssueClaimComplete         = `@%v , 请关注您提交的pr审核进度, 跟进相关负责人审核, pr合入后可获得积分. 注: 提交pr时, 请务必在pr描述里添加此issue编号(#issue编号), 谢谢!`
@@ -114,7 +115,7 @@ const (
 	IssueForciGiveUpBlack         = `@%v , 由于您违规操作, 此次认领无效.`
 	// Unable to close issue notification
 	IssueUnableCloseNot = `@%v , 关闭当前issue条件为=>学生完成pr, 导师在issue评论区输入:/intern-done,正常关闭issue,学生获得积分; 导师issue评论区输入:/close, 任何情况下可以关闭.`
-	IssueGetPointNot = `@%v , 恭喜您提交的任务成果已通过导师审核, 已获得 %v 积分, 谢谢您的参与.`
+	IssueGetPointNot    = `@%v , 恭喜您提交的任务成果已通过导师审核, 已获得 %v 积分, 谢谢您的参与.`
 )
 
 const (
