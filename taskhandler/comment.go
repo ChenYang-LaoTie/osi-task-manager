@@ -434,6 +434,16 @@ func UserClaimTask(payload models.CommentPayload, eulerToken, owner string, eoi 
 		SendPrivateLetters(eulerToken, iss, payload.Comment.User.UserName)
 		return
 	} else {
+		if owner == "mindspore" {
+			if su.BelongOwner != owner {
+				is := fmt.Sprintf(MindSporeIssueClaiNotSigned, payload.Comment.User.UserName)
+				AddCommentToIssue(is, payload.Issue.Number, owner, payload.Repository.Path, eulerToken)
+				iss := fmt.Sprintf(MindSporeIssueClaiNotSignedSend, eoi.GitUrl)
+				SendPrivateLetters(eulerToken, iss, payload.Comment.User.UserName)
+				return
+			}
+		}
+
 		UpdateStdUsers(&su, payload.Comment.User.UserName, payload.Comment.User.UserName)
 		if su.TestFlag == 1 {
 			logs.Error("UserClaimTask, The user did not complete the test task, GitUserId: ", su.GitUserId)

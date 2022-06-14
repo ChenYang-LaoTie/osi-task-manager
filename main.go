@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/astaxie/beego"
 	"osi-task-manager/common"
 	"osi-task-manager/models"
 	_ "osi-task-manager/routers"
-	"github.com/astaxie/beego"
 	"osi-task-manager/task"
 )
 
@@ -34,4 +34,3 @@ func main() {
 	}
 	beego.Run()
 }
-
