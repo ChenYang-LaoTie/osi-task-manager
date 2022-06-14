@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -67,18 +68,25 @@ func ProcStdData(excelData [][]string, accessToken string) {
 		su := models.StdUser{}
 		gitUserId := ""
 		emailAddr := ""
+		belongOwner := ""
 		statusType := 1
 		if len(ed) <= 1 {
 			logs.Error("data err :", ed)
 			continue
-		} else if len(ed) == 2 {
+		}
+		if len(ed) == 2 {
 			gitUserId = ed[0]
 			statusType, _ = strconv.Atoi(ed[1])
-		} else {
+		}
+		if len(ed) >= 3 {
 			gitUserId = ed[0]
 			emailAddr = ed[1]
 			statusType, _ = strconv.Atoi(ed[2])
 		}
+		if len(ed) >= 4 {
+			belongOwner = strings.ToLower(ed[3])
+		}
+
 		gui := GetGitId(accessToken, gitUserId)
 		if gui.GitId == 0 {
 			logs.Error("GetGitId, Failed to get gitid information: ", gui)
@@ -87,7 +95,7 @@ func ProcStdData(excelData [][]string, accessToken string) {
 		su.GitId = gui.GitId
 		su.GitUserId = gitUserId
 		switch statusType {
-		case 3:
+		case 2:
 			delErr := models.DelStdUser(&su, "GitId")
 			if delErr != nil {
 				logs.Error("DelStdUser, delErr: ", delErr)
@@ -102,6 +110,7 @@ func ProcStdData(excelData [][]string, accessToken string) {
 				su.Status = 1
 				su.TestFlag = 2
 				su.UserName = gui.Login
+				su.BelongOwner = belongOwner
 				inNum, inErr := models.InsertStdUser(&su)
 				if inNum > 0 {
 					logs.Info("InsertStdUser success, inNum:", inNum)
@@ -115,7 +124,8 @@ func ProcStdData(excelData [][]string, accessToken string) {
 				su.TestFlag = 2
 				su.GitUserId = gui.Login
 				su.UserName = gui.Login
-				upErr := models.UpdateStdUser(&su, "EmailAddr", "UpdateTime", "Status", "GitUserId", "TestFlag")
+				su.BelongOwner = belongOwner
+				upErr := models.UpdateStdUser(&su, "EmailAddr", "UpdateTime", "Status", "GitUserId", "TestFlag", "BelongOwner")
 				if upErr == nil {
 					logs.Info("UpdateStdUser success, upErr:", upErr)
 				} else {

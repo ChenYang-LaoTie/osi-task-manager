@@ -1,11 +1,12 @@
 package models
 
 import (
+	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/config"
 	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
-	"time"
 )
 
 type LoginUserToken struct {
@@ -20,16 +21,17 @@ type LoginUserToken struct {
 }
 
 type StdUser struct {
-	UserId     int64  `orm:"pk;auto;column(user_id)"`
-	UserName   string `orm:"size(256);column(user_name);null"`
-	GitId      int64  `orm:"column(git_id);unique" description:"git内部id"`
-	GitUserId  string `orm:"size(512);column(git_login);unique"`
-	EmailAddr  string `orm:"size(256);column(email_address)"`
-	Status     int8   `orm:"default(1);column(status)" description:"1:正常用户;2:异常用户;3:用户已无法领取任务"`
-	TestFlag   int8   `orm:"default(1);column(test_flag)" description:"1:未完成测试任务;2:已完成测试任务"`
-	CreateTime string `orm:"size(32);column(create_time);"`
-	UpdateTime string `orm:"size(32);column(update_time);null"`
-	DeleteTime string `orm:"size(32);column(delete_time);null"`
+	UserId      int64  `orm:"pk;auto;column(user_id)"`
+	UserName    string `orm:"size(256);column(user_name);null"`
+	GitId       int64  `orm:"column(git_id);unique" description:"git内部id"`
+	GitUserId   string `orm:"size(512);column(git_login);unique"`
+	EmailAddr   string `orm:"size(256);column(email_address)"`
+	Status      int8   `orm:"default(1);column(status)" description:"1:正常用户;2:异常用户;3:用户已无法领取任务"`
+	TestFlag    int8   `orm:"default(1);column(test_flag)" description:"1:未完成测试任务;2:已完成测试任务"`
+	BelongOwner string `orm:"size(256);column(belong_owner)"`
+	CreateTime  string `orm:"size(32);column(create_time);"`
+	UpdateTime  string `orm:"size(32);column(update_time);null"`
+	DeleteTime  string `orm:"size(32);column(delete_time);null"`
 }
 
 type TutUser struct {
@@ -170,7 +172,7 @@ type EulerIssueUserRecord struct {
 	IssueNumber string `orm:"column(issue_num);size(50);" description:"issue 编号"`
 	RepoPath    string `orm:"column(issue_repo);size(512)" description:"仓库空间地址"`
 	Owner       string `orm:"column(owner_repo);size(64)" description:"仓库所在组织"`
-	Status int8 `orm:"default(1);column(status)" description:"1:已认领;2:取消认领;3:完成提交;4:审核通过;
+	Status      int8   `orm:"default(1);column(status)" description:"1:已认领;2:取消认领;3:完成提交;4:审核通过;
 						5:认领超额; 6:重复认领; 7: 已被他人认领;8:提交他人任务; 9:重复完成提交; 
 						10: 他人取消任务, 11: 任务完成,取消任务失败,
 						12: 删除issue, 13: 黑名单用户认领失败, 14: 主动取消任务次数已达上线,不能再次认领任务, 
