@@ -49,14 +49,7 @@ func (u *InternPointsListControllers) Get() {
 	resp.Mesg = "Data does not exist"
 	resp.TotalCount = 0
 	resp.UserPoints = upd
-	token := u.GetString("token", "")
-	tokenBool := CheckLoginUser(token)
-	if !tokenBool {
-		resp.Code = 403
-		resp.Mesg = "Request parameter error"
-		u.RetData(resp)
-		return
-	}
+
 	count := models.QueryUserPointsCount()
 	if count > 0 {
 		resp.Code = 200
@@ -154,14 +147,7 @@ func (u *InternUserPointsControllers) Get() {
 	resp.UserId = 0
 	resp.GitUserId = ""
 	resp.UserPoints = upd
-	token := u.GetString("token", "")
-	tokenBool := CheckLoginUser(token)
-	if !tokenBool {
-		resp.Code = 403
-		resp.Mesg = "Request parameter error"
-		u.RetData(resp)
-		return
-	}
+
 	userId, err := u.GetInt64("userId", 0)
 	if err != nil || userId == 0 {
 		logs.Error("err: ", err, ", userId: ", userId)
@@ -248,15 +234,6 @@ func (u *InternUserSortPointsControllers) Get() {
 		", Header: ", req.Header, ", body: ", req.Body)
 	resp := ResData{}
 	var upd []UserPointsData
-	token := u.GetString("token", "")
-	tokenBool := CheckLoginUser(token)
-
-	if !tokenBool {
-		resp.Code = 403
-		resp.Mesg = "Request parameter error"
-		u.RetData(resp)
-		return
-	}
 
 	ownerRepo := u.GetString("sort", "mindspore")
 

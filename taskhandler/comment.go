@@ -522,7 +522,7 @@ func VerifyStdClaimReq(payload models.CommentPayload, userId int64, eulerToken, 
 		EulerIssueUserRecord(et)
 		return
 	}
-	issueCount := beego.AppConfig.DefaultInt("claimed::issue_count", 1)
+	issueCount := beego.AppConfig.DefaultInt("claimed::issue_count", 2)
 	// Verify whether it is the first-claimed task
 	eiu := models.QueryEulerIssueUnfinished(userId, 3)
 	ciaimCount := len(eiu)

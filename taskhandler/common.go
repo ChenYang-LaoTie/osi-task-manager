@@ -36,8 +36,8 @@ const (
 	IssueClaiNotSigned     = `@%v , 您还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://www.openeuler.org/zh/internship/).`
 	IssueClaiNotSignedSend = `%v, 还未通过开源实习资格申请, 无法领取此任务, 请先完成[实习申请](https://www.openeuler.org/zh/internship/).`
 
-	MindSporeIssueClaiNotSigned     = "`@%v , 您当前还未通过MindSpore社区实习申请, 请按照[开源实习官网]要求先提交申请(https://www.openeuler.org/zh/internship/)."
-	MindSporeIssueClaiNotSignedSend = "%v, 当前还未通过MindSpore社区实习申请, 请按照[开源实习官网]要求先提交申请(https://www.openeuler.org/zh/internship/)."
+	MindSporeIssueClaiNotSigned     = `@%v , 您当前还未通过MindSpore社区实习申请, 请按照[开源实习官网]要求先提交申请(https://www.openeuler.org/zh/internship/).`
+	MindSporeIssueClaiNotSignedSend = `%v, 当前还未通过MindSpore社区实习申请, 请按照[开源实习官网]要求先提交申请(https://www.openeuler.org/zh/internship/).`
 
 	// The user did not complete the test task
 	IssueTestPrCommit     = `@%v , 您还未通过开源实习测试任务, 无法领取此任务, 请先在 %v 仓完成[测试任务](https://gitee.com/openeuler-competition/opensource-internship/issues).`
