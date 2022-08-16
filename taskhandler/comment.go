@@ -46,7 +46,10 @@ func UpdateIssueToGit(eulerToken, owner, path, issueState string, eoi models.Eul
 	if eulerToken != "" && owner != "" && path != "" {
 		url := "https://gitee.com/api/v5/repos/" + owner + "/issues/" + eoi.IssueNumber
 		statusName := IssueStateRev(issueState)
-		_, toalLabelList := QueryIssueLabels(eulerToken, path, eoi.IssueNumber, owner)
+		_, toalLabelList, err := QueryIssueLabels(eulerToken, path, eoi.IssueNumber, owner)
+		if err != nil {
+			return err
+		}
 		if len(toalLabelList) > 0 {
 			eoi.IssueLabel = strings.Join(toalLabelList, ",")
 		}
@@ -770,6 +773,8 @@ func UserGiveUpTask(payload models.CommentPayload, eulerToken, owner string, eoi
 				et := EulerIssueUserRecordTp{UserId: su.UserId, OrId: eoi.OrId, IssueNumber: payload.Issue.Number,
 					RepoPath: payload.Repository.Path, Owner: owner, Status: 2}
 				EulerIssueUserRecord(et)
+			} else {
+				logs.Error("DeleteEulerIssueUser error:", delErr)
 			}
 		}
 	}
@@ -838,7 +843,7 @@ func TutGiveUpTask(payload models.CommentPayload, eulerToken, owner string, eoi 
 // EditLabel Edit label
 func EditLabel(issuePath, issueNumber, osiTaskLabel, repLabel, eulerToken, owner string, eoi models.EulerOriginIssue) {
 	labels := ""
-	labelList, _ := QueryIssueLabels(eulerToken, issuePath, issueNumber, owner)
+	labelList, _, _ := QueryIssueLabels(eulerToken, issuePath, issueNumber, owner)
 	if len(osiTaskLabel) > 0 {
 		if len(labelList) > 0 {
 			tmpLabel := make([]string, 0)
@@ -878,7 +883,7 @@ func EditLabel(issuePath, issueNumber, osiTaskLabel, repLabel, eulerToken, owner
 
 func ReduceLabel(issuePath, issueNumber, eulerToken, owner string, eoi models.EulerOriginIssue, reduceLabList []string) {
 	labels := ""
-	_, totalLabelList := QueryIssueLabels(eulerToken, issuePath, issueNumber, owner)
+	_, totalLabelList, _ := QueryIssueLabels(eulerToken, issuePath, issueNumber, owner)
 	if len(totalLabelList) > 0 {
 		tmpLabel := make([]string, 0)
 		for _, lab := range totalLabelList {
