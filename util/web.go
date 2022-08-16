@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/astaxie/beego/logs"
 	"io/ioutil"
 	"net/http"
-	"osi-task-manager/common"
 	"strconv"
 	"time"
+
+	"github.com/astaxie/beego/logs"
+	"osi-task-manager/common"
 )
 
 //HTTPPost post request
@@ -130,7 +131,7 @@ func HTTPPut(url string, requestBody string) ([]map[string]interface{}, error) {
 
 // http post label
 func HTTPPostLabel(url string, requestBody string) ([]map[string]interface{}, error) {
-	req, err := http.NewRequest("PUT", url, bytes.NewBuffer([]byte(requestBody)))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(requestBody)))
 	defer common.Catchs()
 	if err != nil {
 		return nil, err

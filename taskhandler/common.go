@@ -208,14 +208,17 @@ func SendPrivateLetters(access, content, useName string) {
 }
 
 // Query label
-func QueryIssueLabels(token, repo, issueNum, owner string) ([]string, []string) {
+func QueryIssueLabels(token, repo, issueNum, owner string) ([]string, []string, error) {
 	allLabelSlice := make([]string, 0)
 	labelSlice := make([]string, 0)
 	totalLabel := beego.AppConfig.String("totallabel")
 	totalLabelList := strings.Split(totalLabel, ",")
 	url := fmt.Sprintf("https://gitee.com/api/v5/repos/%v/%v/issues/%v/labels?access_token=%v", owner, repo, issueNum, token)
 	labelData, err := util.HTTPGet(url)
-	if err == nil && labelData != nil {
+	if err != nil {
+		return labelSlice, allLabelSlice, err
+	}
+	if labelData != nil {
 		for _, value := range labelData {
 			if _, ok := value["id"]; !ok {
 				logs.Error("QueryIssueLabels， labelData, err: ", ok)
@@ -235,7 +238,7 @@ func QueryIssueLabels(token, repo, issueNum, owner string) ([]string, []string) 
 			}
 		}
 	}
-	return labelSlice, allLabelSlice
+	return labelSlice, allLabelSlice, nil
 }
 
 func AddIssueLabel(token, repo, issueNum, owner, label string) bool {

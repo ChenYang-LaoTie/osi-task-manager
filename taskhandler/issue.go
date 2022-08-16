@@ -477,7 +477,11 @@ func AutoAddLabelTask() error {
 				logs.Error("namespace error: ", ei.Owner)
 				continue
 			}
-			_, allLabelList := QueryIssueLabels(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner)
+			_, allLabelList, err := QueryIssueLabels(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner)
+			if err != nil {
+				return err
+			}
+
 			if len(allLabelList) > 0 {
 				repLabelList := make([]string, 0)
 				labelFlag := false
@@ -520,20 +524,27 @@ func AutoAddLabelTask() error {
 					labels = strings.Join(repLabelSlice, ",")
 				}
 				if len(labels) > 1 {
-					if labelFlag || !interFlag {
-						AddIssueLabel(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner, labels)
-						ei.LabelFlag += 1
+					ok := AddIssueLabel(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner, labels)
+					if ok {
+						if labelFlag {
+							ei.LabelFlag = 2
+						}
+						ei.IssueLabel = labels
+						upErr := models.UpdateEulerOriginIssue(&ei, "IssueLabel", "LabelFlag")
+						if upErr != nil {
+							logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
+						}
 					}
 				}
-				ei.IssueLabel = labels
 			} else {
-				AddIssueLabel(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner, osiTaskLabel)
-				ei.IssueLabel = osiTaskLabel
-				ei.LabelFlag += 1
-			}
-			upErr := models.UpdateEulerOriginIssue(&ei, "IssueLabel", "LabelFlag")
-			if upErr != nil {
-				logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
+				ok := AddIssueLabel(eulerToken, ei.RepoPath, ei.IssueNumber, ei.Owner, osiTaskLabel)
+				if ok {
+					ei.IssueLabel = osiTaskLabel
+					upErr := models.UpdateEulerOriginIssue(&ei, "IssueLabel", "LabelFlag")
+					if upErr != nil {
+						logs.Error("UpdateEulerOriginIssue, upErr: ", upErr)
+					}
+				}
 			}
 		}
 	}
