@@ -340,7 +340,6 @@ func SendCommonMail(mailTo, mailCc []string, subject string, body, attchName str
 	emailName := beego.AppConfig.String("email::email_name")
 	emailPwd := beego.AppConfig.String("email::email_pwd")
 	emailHost := beego.AppConfig.String("email::email_host")
-	emailPwd = ""
 	emailPort := beego.AppConfig.String("email::email_port")
 	mailConn := map[string]string{
 		"user": emailName,
